@@ -47,3 +47,7 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Ignorar archivos de datos pesados
+data/
+*.csv
