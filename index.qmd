@@ -1,0 +1,14 @@
+---
+title: "Cyclistic Bike-Share Analysis"
+subtitle: "Google Data Analytics Capstone"
+author: "Roberto_Antuna"
+date: "2026-01-31"
+format:
+  html:
+    toc: true
+    toc-location: left
+    code-fold: true
+    theme: cosmo
+    echo: true
+---
+

@@ -1,6 +1,6 @@
 <p align="center">
 
-<img src="/images/cyclistic.png" alt="Cyclistic Logo" width="300"/>
+<img src="images/cyclistic.png" alt="Cyclistic Logo" width="300"/>
 
 </p>
 
