@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Roberto_Antuna">
-<meta name="dcterms.date" content="2026-01-31">
+<meta name="dcterms.date" content="2026-02-02">
 
 <title>Cyclistic Bike-Share Analysis</title>
 <style>
@@ -45,7 +45,25 @@ ul.task-list li input[type="checkbox"] {
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
 <div id="quarto-sidebar-toc-left" class="sidebar toc-left">
-  
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#ask" id="toc-ask" class="nav-link" data-scroll-target="#ask">1. Ask</a>
+  <ul class="collapse">
+  <li><a href="#business-task" id="toc-business-task" class="nav-link" data-scroll-target="#business-task">Business Task</a></li>
+  <li><a href="#key-stakeholders" id="toc-key-stakeholders" class="nav-link" data-scroll-target="#key-stakeholders">Key Stakeholders</a></li>
+  <li><a href="#primary-question" id="toc-primary-question" class="nav-link" data-scroll-target="#primary-question">Primary Question</a></li>
+  </ul></li>
+  <li><a href="#prepare" id="toc-prepare" class="nav-link" data-scroll-target="#prepare">2. Prepare</a>
+  <ul class="collapse">
+  <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources">Data Sources</a></li>
+  <li><a href="#data-credibility-roccc-analysis" id="toc-data-credibility-roccc-analysis" class="nav-link" data-scroll-target="#data-credibility-roccc-analysis">Data Credibility (ROCCC Analysis)</a></li>
+  <li><a href="#data-integrity-privacy" id="toc-data-integrity-privacy" class="nav-link" data-scroll-target="#data-integrity-privacy">Data Integrity &amp; Privacy</a></li>
+  </ul></li>
+  </ul>
+</nav>
 </div>
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
 </div>
@@ -71,7 +89,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 31, 2026</p>
+      <p class="date">February 2, 2026</p>
     </div>
   </div>
   
@@ -83,7 +101,102 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Cyclistic is a fictional company launched in Chicago in 2016. The company specializes in providing residents with bicycles for use within the city. Currently, they have more than <strong>5,800 bicycles</strong> and more than <strong>650 docking stations</strong>.</p>
+<p>Cyclistic offers flexible plans for utilizing their equipment:</p>
+<ul>
+<li>Single-ride pass<br>
+</li>
+<li>Full-day pass<br>
+</li>
+<li>Annual membership</li>
+</ul>
+<p>The first two categories are considered <strong><em>Casual riders</em></strong> (Customers according to the records), while the third category consists of <strong><em>Cyclistic members</em></strong> (Subscribers according to the records).</p>
+<p>In addition to conventional bicycles, Cyclistic provides three inclusive options:</p>
+<div class="quarto-layout-panel" data-layout-ncol="3" style="text-align: center;">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/reclining_bike.png" class="img-fluid figure-img"></p>
+<figcaption>Reclining Bikes</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/hand_tricycle.png" class="img-fluid figure-img"></p>
+<figcaption>Hand Tricycles</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/cargo_bike.png" class="img-fluid figure-img"></p>
+<figcaption>Cargo Bikes</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>The marketing analyst team, led by Director Lily Moreno, has identified that 92% of users utilize conventional bicycles. Furthermore, 70% of users use the equipment for recreational purposes, while the remaining 30% use it as a means of transportation to work.</p>
+<p>Given that annual memberships yield the highest profits, the marketing team aims to better understand users, their needs, and attraction channels (digital media) to <strong>convert casual riders into Cyclistic members</strong>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/cyclistic.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Cyclistic logo"></p>
+</figure>
+</div>
+</section>
+<section id="ask" class="level2">
+<h2 class="anchored" data-anchor-id="ask">1. Ask</h2>
+<section id="business-task" class="level3">
+<h3 class="anchored" data-anchor-id="business-task">Business Task</h3>
+<p>The primary objective of this analysis is to identify key differences in how annual members and casual riders utilize Cyclistic’s bike-share service. By extracting these insights from historical trip data, I aim to provide data-driven recommendations for a marketing strategy specifically designed to convert casual riders into long-term annual members, thereby driving sustainable growth for the company.</p>
+</section>
+<section id="key-stakeholders" class="level3">
+<h3 class="anchored" data-anchor-id="key-stakeholders">Key Stakeholders</h3>
+<ul>
+<li><strong>Lily Moreno:</strong> Director of Marketing and my manager. She is responsible for the development of campaigns and initiatives to promote the bike-share program.</li>
+<li><strong>Cyclistic Marketing Analytics Team:</strong> A team of data analysts who are responsible for collecting, analyzing, and reporting data that helps guide Cyclistic’s marketing strategy.</li>
+<li><strong>Cyclistic Executive Team:</strong> The notoriously detail-oriented executive team who will decide whether to approve the recommended marketing program.</li>
+</ul>
+</section>
+<section id="primary-question" class="level3">
+<h3 class="anchored" data-anchor-id="primary-question">Primary Question</h3>
+<p>To guide the marketing strategy, this report focuses on answering:<br>
+<strong>How do annual members and casual riders use Cyclistic bikes differently?</strong></p>
+</section>
+</section>
+<section id="prepare" class="level2">
+<h2 class="anchored" data-anchor-id="prepare">2. Prepare</h2>
+<section id="data-sources" class="level3">
+<h3 class="anchored" data-anchor-id="data-sources">Data Sources</h3>
+<p>For this analysis, I will use Cyclistic’s historical trip data to identify trends. To ensure technical efficiency and follow project guidelines, the scope is limited to the following datasets:</p>
+<p><strong>1.-</strong> <strong>Divvy_Trips_2019_Q1.csv</strong><br>
+<strong>2.-</strong> <strong>Divvy_Trips_2020_Q1.csv</strong></p>
+<p>This data is public and has been made available by Motivate International Inc.&nbsp;under this <a href="https://divvybikes.com/data-license-agreement">license</a>.</p>
+</section>
+<section id="data-credibility-roccc-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="data-credibility-roccc-analysis">Data Credibility (ROCCC Analysis)</h3>
+<ul>
+<li><strong>Reliable:</strong> The data is accurate and complete, representing a full quarter of activity for each year.</li>
+<li><strong>Original:</strong> The data comes directly from the City of Chicago’s bike-share program (Divvy).</li>
+<li><strong>Comprehensive:</strong> It includes essential variables such as ride duration, start/end times, and station names.</li>
+<li><strong>Current:</strong> While from 2019-2020, it provides the necessary historical context to answer the primary business question.</li>
+<li><strong>Cited:</strong> The data is officially documented and maintained by the service provider.</li>
+</ul>
+</section>
+<section id="data-integrity-privacy" class="level3">
+<h3 class="anchored" data-anchor-id="data-integrity-privacy">Data Integrity &amp; Privacy</h3>
+<ul>
+<li><strong>Privacy:</strong> To protect user identity, personally identifiable information (PII) such as credit card numbers and home addresses has been excluded from the datasets.</li>
+<li><strong>Limitations:</strong> Demographic data (gender and age) is available for 2019 but was removed from the 2020 dataset; therefore, this analysis will focus primarily on usage patterns rather than demographics.</li>
+</ul>
+</section>
+</section>
 
 </main>
 <!-- /main column -->
