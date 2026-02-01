@@ -10,6 +10,8 @@ format:
     code-fold: true
     theme: cosmo
     echo: true
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## Introduction
@@ -43,34 +45,132 @@ Given that annual memberships yield the highest profits, the marketing team aims
 ## 1. Ask
 
 ### Business Task
+
 The primary objective of this analysis is to identify key differences in how annual members and casual riders utilize Cyclistic's bike-share service. By extracting these insights from historical trip data, I aim to provide data-driven recommendations for a marketing strategy specifically designed to convert casual riders into long-term annual members, thereby driving sustainable growth for the company.
 
 ### Key Stakeholders
-* **Lily Moreno:** Director of Marketing and my manager. She is responsible for the development of campaigns and initiatives to promote the bike-share program.
-* **Cyclistic Marketing Analytics Team:** A team of data analysts who are responsible for collecting, analyzing, and reporting data that helps guide Cyclistic’s marketing strategy.
-* **Cyclistic Executive Team:** The notoriously detail-oriented executive team who will decide whether to approve the recommended marketing program.
+
+-   **Lily Moreno:** Director of Marketing and my manager. She is responsible for the development of campaigns and initiatives to promote the bike-share program.
+-   **Cyclistic Marketing Analytics Team:** A team of data analysts who are responsible for collecting, analyzing, and reporting data that helps guide Cyclistic’s marketing strategy.
+-   **Cyclistic Executive Team:** The notoriously detail-oriented executive team who will decide whether to approve the recommended marketing program.
 
 ### Primary Question
-To guide the marketing strategy, this report focuses on answering:    
+
+To guide the marketing strategy, this report focuses on answering:\
 **How do annual members and casual riders use Cyclistic bikes differently?**
 
 ## 2. Prepare
 
 ### Data Sources
-For this analysis, I will use Cyclistic’s historical trip data to identify trends. To ensure technical efficiency and follow project guidelines, the scope is limited to the following datasets:  
 
-**1.-**   **Divvy_Trips_2019_Q1.csv**  
-**2.-**   **Divvy_Trips_2020_Q1.csv**
+For this analysis, I will use Cyclistic’s historical trip data to identify trends. To ensure technical efficiency and follow project guidelines, the scope is limited to the following datasets:
+
+**1.-** **Divvy_Trips_2019_Q1.csv**\
+**2.-** **Divvy_Trips_2020_Q1.csv**
 
 This data is public and has been made available by Motivate International Inc. under this [license](https://divvybikes.com/data-license-agreement).
 
 ### Data Credibility (ROCCC Analysis)
-* **Reliable:** The data is accurate and complete, representing a full quarter of activity for each year.
-* **Original:** The data comes directly from the City of Chicago’s bike-share program (Divvy).
-* **Comprehensive:** It includes essential variables such as ride duration, start/end times, and station names.
-* **Current:** While from 2019-2020, it provides the necessary historical context to answer the primary business question.
-* **Cited:** The data is officially documented and maintained by the service provider.
+
+-   **Reliable:** The data is accurate and complete, representing a full quarter of activity for each year.
+-   **Original:** The data comes directly from the City of Chicago’s bike-share program (Divvy).
+-   **Comprehensive:** It includes essential variables such as ride duration, start/end times, and station names.
+-   **Current:** While from 2019-2020, it provides the necessary historical context to answer the primary business question.
+-   **Cited:** The data is officially documented and maintained by the service provider.
 
 ### Data Integrity & Privacy
-* **Privacy:** To protect user identity, personally identifiable information (PII) such as credit card numbers and home addresses has been excluded from the datasets.
-* **Limitations:** Demographic data (gender and age) is available for 2019 but was removed from the 2020 dataset; therefore, this analysis will focus primarily on usage patterns rather than demographics.
+
+-   **Privacy:** To protect user identity, personally identifiable information (PII) such as credit card numbers and home addresses has been excluded from the datasets.
+-   **Limitations:** Demographic data (gender and age) is available for 2019 but was removed from the 2020 dataset; therefore, this analysis will focus primarily on usage patterns rather than demographics.
+
+## 3. Process
+
+In this phase, the data is processed to ensure it is clean, consistent, and ready for analysis. I am using **R** and the **tidyverse** ecosystem due to their efficiency in handling large datasets and ensuring reproducible results.
+
+### 3.1 Setup and Data Import
+
+First, I load the necessary libraries and import the datasets for the first quarter of 2019 and 2020. Following the project guidelines, the scope is focused on these specific periods to ensure technical efficiency.
+
+```{r}
+#| label: Packages
+#| message: false
+#Import libraries
+library(tidyverse)
+library(lubridate)
+library(janitor)
+```
+
+```{r}
+#| label: importing-data
+# Import datasets
+q1_2019 <- read_csv("data/Divvy_Trips_2019_Q1.csv", show_col_types = FALSE)
+q1_2020 <- read_csv("data/Divvy_Trips_2020_Q1.csv", show_col_types = FALSE)
+```
+
+### 3.2 Data Inspection
+
+Before any manipulation, it is essential to understand the structure and data types of the imported datasets. This step confirms the consistency of the data and identifies necessary cleaning tasks.
+
+```{r}
+#| label: inspection
+# Inspect the structure of both datasets
+glimpse(q1_2019)
+glimpse(q1_2020)
+```
+
+### 3.3 Column Standardization
+
+The inspection confirmed that the 2019 dataset uses a legacy naming convention (e.g., `trip_id`, `usertype`) compared to the 2020 version. To facilitate a clean merge, I am renaming the 2019 columns to align with the current standard.
+
+```{r}
+#| label: rename-columns
+q1_2019 <- q1_2019 %>% 
+  rename(ride_id = trip_id
+        ,rideable_type = bikeid
+        ,started_at = start_time
+        ,ended_at = end_time
+        ,start_station_name = from_station_name
+        ,start_station_id = from_station_id
+        ,end_station_name = to_station_name
+        ,end_station_id = to_station_id
+        ,member_casual = usertype)
+```
+
+### 3.4 Data Consistency & Type Conversion
+
+After renaming the columns, it is crucial to align the data types. In the 2019 dataset, `ride_id` and `rideable_type` are stored as numeric values, whereas the 2020 dataset stores them as characters. I will convert the 2019 columns to character format to ensure a seamless merge.
+
+Additionally, I am consolidating the `member_casual` labels. The 2019 data uses "Subscriber" and "Customer," while 2020 uses "member" and "casual." I will standardize these to the current two-category format.
+
+```{r}
+#| label: type-conversion-and-recode
+
+# Convert IDs to character for compatibility
+q1_2019 <- q1_2019 %>% 
+  mutate(ride_id = as.character(ride_id)
+        ,rideable_type = as.character(rideable_type)) 
+
+# Consolidate user labels in both datasets
+q1_2019 <- q1_2019 %>% 
+  mutate(member_casual = recode(member_casual
+                                ,"Subscriber" = "member"
+                                ,"Customer" = "casual"))
+
+q1_2020 <- q1_2020 %>% 
+  mutate(member_casual = recode(member_casual
+                                ,"Subscriber" = "member"
+                                ,"Customer" = "casual"))
+```
+
+### 3.5 Merging Datasets
+
+With identical column names and data types, I am stacking the datasets into a single data frame named `all_trips`. To optimize system memory, I will remove the original data frames from the environment once the merge is complete.
+
+```{r}
+#| label: merge-data
+# Stack the data frames
+all_trips <- bind_rows(q1_2019, q1_2020)
+
+# Remove separate data frames to save RAM
+rm(q1_2019, q1_2020)
+```

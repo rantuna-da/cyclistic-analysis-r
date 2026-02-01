@@ -22,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -61,6 +96,14 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources">Data Sources</a></li>
   <li><a href="#data-credibility-roccc-analysis" id="toc-data-credibility-roccc-analysis" class="nav-link" data-scroll-target="#data-credibility-roccc-analysis">Data Credibility (ROCCC Analysis)</a></li>
   <li><a href="#data-integrity-privacy" id="toc-data-integrity-privacy" class="nav-link" data-scroll-target="#data-integrity-privacy">Data Integrity &amp; Privacy</a></li>
+  </ul></li>
+  <li><a href="#process" id="toc-process" class="nav-link" data-scroll-target="#process">3. Process</a>
+  <ul class="collapse">
+  <li><a href="#setup-and-data-import" id="toc-setup-and-data-import" class="nav-link" data-scroll-target="#setup-and-data-import">3.1 Setup and Data Import</a></li>
+  <li><a href="#data-inspection" id="toc-data-inspection" class="nav-link" data-scroll-target="#data-inspection">3.2 Data Inspection</a></li>
+  <li><a href="#column-standardization" id="toc-column-standardization" class="nav-link" data-scroll-target="#column-standardization">3.3 Column Standardization</a></li>
+  <li><a href="#data-consistency-type-conversion" id="toc-data-consistency-type-conversion" class="nav-link" data-scroll-target="#data-consistency-type-conversion">3.4 Data Consistency &amp; Type Conversion</a></li>
+  <li><a href="#merging-datasets" id="toc-merging-datasets" class="nav-link" data-scroll-target="#merging-datasets">3.5 Merging Datasets</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -195,6 +238,137 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>Privacy:</strong> To protect user identity, personally identifiable information (PII) such as credit card numbers and home addresses has been excluded from the datasets.</li>
 <li><strong>Limitations:</strong> Demographic data (gender and age) is available for 2019 but was removed from the 2020 dataset; therefore, this analysis will focus primarily on usage patterns rather than demographics.</li>
 </ul>
+</section>
+</section>
+<section id="process" class="level2">
+<h2 class="anchored" data-anchor-id="process">3. Process</h2>
+<p>In this phase, the data is processed to ensure it is clean, consistent, and ready for analysis. I am using <strong>R</strong> and the <strong>tidyverse</strong> ecosystem due to their efficiency in handling large datasets and ensuring reproducible results.</p>
+<section id="setup-and-data-import" class="level3">
+<h3 class="anchored" data-anchor-id="setup-and-data-import">3.1 Setup and Data Import</h3>
+<p>First, I load the necessary libraries and import the datasets for the first quarter of 2019 and 2020. Following the project guidelines, the scope is focused on these specific periods to ensure technical efficiency.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Import libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import datasets</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>q1_2019 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/Divvy_Trips_2019_Q1.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>q1_2020 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/Divvy_Trips_2020_Q1.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="data-inspection" class="level3">
+<h3 class="anchored" data-anchor-id="data-inspection">3.2 Data Inspection</h3>
+<p>Before any manipulation, it is essential to understand the structure and data types of the imported datasets. This step confirms the consistency of the data and identifies necessary cleaning tasks.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect the structure of both datasets</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(q1_2019)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 365,069
+Columns: 12
+$ trip_id           &lt;dbl&gt; 21742443, 21742444, 21742445, 21742446, 21742447, 21…
+$ start_time        &lt;dttm&gt; 2019-01-01 00:04:37, 2019-01-01 00:08:13, 2019-01-0…
+$ end_time          &lt;dttm&gt; 2019-01-01 00:11:07, 2019-01-01 00:15:34, 2019-01-0…
+$ bikeid            &lt;dbl&gt; 2167, 4386, 1524, 252, 1170, 2437, 2708, 2796, 6205,…
+$ tripduration      &lt;dbl&gt; 390, 441, 829, 1783, 364, 216, 177, 100, 1727, 336, …
+$ from_station_id   &lt;dbl&gt; 199, 44, 15, 123, 173, 98, 98, 211, 150, 268, 299, 2…
+$ from_station_name &lt;chr&gt; "Wabash Ave &amp; Grand Ave", "State St &amp; Randolph St", …
+$ to_station_id     &lt;dbl&gt; 84, 624, 644, 176, 35, 49, 49, 142, 148, 141, 295, 4…
+$ to_station_name   &lt;chr&gt; "Milwaukee Ave &amp; Grand Ave", "Dearborn St &amp; Van Bure…
+$ usertype          &lt;chr&gt; "Subscriber", "Subscriber", "Subscriber", "Subscribe…
+$ gender            &lt;chr&gt; "Male", "Female", "Female", "Male", "Male", "Female"…
+$ birthyear         &lt;dbl&gt; 1989, 1990, 1994, 1993, 1994, 1983, 1984, 1990, 1995…</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(q1_2020)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 426,887
+Columns: 13
+$ ride_id            &lt;chr&gt; "EACB19130B0CDA4A", "8FED874C809DC021", "789F3C21E4…
+$ rideable_type      &lt;chr&gt; "docked_bike", "docked_bike", "docked_bike", "docke…
+$ started_at         &lt;dttm&gt; 2020-01-21 20:06:59, 2020-01-30 14:22:39, 2020-01-…
+$ ended_at           &lt;dttm&gt; 2020-01-21 20:14:30, 2020-01-30 14:26:22, 2020-01-…
+$ start_station_name &lt;chr&gt; "Western Ave &amp; Leland Ave", "Clark St &amp; Montrose Av…
+$ start_station_id   &lt;dbl&gt; 239, 234, 296, 51, 66, 212, 96, 96, 212, 38, 117, 1…
+$ end_station_name   &lt;chr&gt; "Clark St &amp; Leland Ave", "Southport Ave &amp; Irving Pa…
+$ end_station_id     &lt;dbl&gt; 326, 318, 117, 24, 212, 96, 212, 212, 96, 100, 632,…
+$ start_lat          &lt;dbl&gt; 41.9665, 41.9616, 41.9401, 41.8846, 41.8856, 41.889…
+$ start_lng          &lt;dbl&gt; -87.6884, -87.6660, -87.6455, -87.6319, -87.6418, -…
+$ end_lat            &lt;dbl&gt; 41.9671, 41.9542, 41.9402, 41.8918, 41.8899, 41.884…
+$ end_lng            &lt;dbl&gt; -87.6674, -87.6644, -87.6530, -87.6206, -87.6343, -…
+$ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member", "…</code></pre>
+</div>
+</div>
+</section>
+<section id="column-standardization" class="level3">
+<h3 class="anchored" data-anchor-id="column-standardization">3.3 Column Standardization</h3>
+<p>The inspection confirmed that the 2019 dataset uses a legacy naming convention (e.g., <code>trip_id</code>, <code>usertype</code>) compared to the 2020 version. To facilitate a clean merge, I am renaming the 2019 columns to align with the current standard.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>q1_2019 <span class="ot">&lt;-</span> q1_2019 <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">ride_id =</span> trip_id</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        ,<span class="at">rideable_type =</span> bikeid</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        ,<span class="at">started_at =</span> start_time</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        ,<span class="at">ended_at =</span> end_time</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        ,<span class="at">start_station_name =</span> from_station_name</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        ,<span class="at">start_station_id =</span> from_station_id</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        ,<span class="at">end_station_name =</span> to_station_name</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        ,<span class="at">end_station_id =</span> to_station_id</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        ,<span class="at">member_casual =</span> usertype)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="data-consistency-type-conversion" class="level3">
+<h3 class="anchored" data-anchor-id="data-consistency-type-conversion">3.4 Data Consistency &amp; Type Conversion</h3>
+<p>After renaming the columns, it is crucial to align the data types. In the 2019 dataset, <code>ride_id</code> and <code>rideable_type</code> are stored as numeric values, whereas the 2020 dataset stores them as characters. I will convert the 2019 columns to character format to ensure a seamless merge.</p>
+<p>Additionally, I am consolidating the <code>member_casual</code> labels. The 2019 data uses “Subscriber” and “Customer,” while 2020 uses “member” and “casual.” I will standardize these to the current two-category format.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert IDs to character for compatibility</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>q1_2019 <span class="ot">&lt;-</span> q1_2019 <span class="sc">%&gt;%</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ride_id =</span> <span class="fu">as.character</span>(ride_id)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        ,<span class="at">rideable_type =</span> <span class="fu">as.character</span>(rideable_type)) </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Consolidate user labels in both datasets</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>q1_2019 <span class="ot">&lt;-</span> q1_2019 <span class="sc">%&gt;%</span> </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">member_casual =</span> <span class="fu">recode</span>(member_casual</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                                ,<span class="st">"Subscriber"</span> <span class="ot">=</span> <span class="st">"member"</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                                ,<span class="st">"Customer"</span> <span class="ot">=</span> <span class="st">"casual"</span>))</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>q1_2020 <span class="ot">&lt;-</span> q1_2020 <span class="sc">%&gt;%</span> </span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">member_casual =</span> <span class="fu">recode</span>(member_casual</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>                                ,<span class="st">"Subscriber"</span> <span class="ot">=</span> <span class="st">"member"</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>                                ,<span class="st">"Customer"</span> <span class="ot">=</span> <span class="st">"casual"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="merging-datasets" class="level3">
+<h3 class="anchored" data-anchor-id="merging-datasets">3.5 Merging Datasets</h3>
+<p>With identical column names and data types, I am stacking the datasets into a single data frame named <code>all_trips</code>. To optimize system memory, I will remove the original data frames from the environment once the merge is complete.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Stack the data frames</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>all_trips <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(q1_2019, q1_2020)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove separate data frames to save RAM</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(q1_2019, q1_2020)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
 </section>
 </section>
 
