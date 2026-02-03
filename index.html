@@ -104,6 +104,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#column-standardization" id="toc-column-standardization" class="nav-link" data-scroll-target="#column-standardization">3.3 Column Standardization</a></li>
   <li><a href="#data-consistency-type-conversion" id="toc-data-consistency-type-conversion" class="nav-link" data-scroll-target="#data-consistency-type-conversion">3.4 Data Consistency &amp; Type Conversion</a></li>
   <li><a href="#merging-datasets" id="toc-merging-datasets" class="nav-link" data-scroll-target="#merging-datasets">3.5 Merging Datasets</a></li>
+  <li><a href="#data-cleaning-and-validation" id="toc-data-cleaning-and-validation" class="nav-link" data-scroll-target="#data-cleaning-and-validation">3.7 Data Cleaning and Validation</a></li>
+  <li><a href="#station-name-standardization" id="toc-station-name-standardization" class="nav-link" data-scroll-target="#station-name-standardization">3.8 Station Name Standardization</a></li>
+  <li><a href="#final-column-selection" id="toc-final-column-selection" class="nav-link" data-scroll-target="#final-column-selection">3.9 Final Column Selection</a></li>
+  <li><a href="#data-health-check-quality-assurance" id="toc-data-health-check-quality-assurance" class="nav-link" data-scroll-target="#data-health-check-quality-assurance">3.10 Data Health Check &amp; Quality Assurance</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -157,7 +161,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>The first two categories are considered <strong><em>Casual riders</em></strong> (Customers according to the records), while the third category consists of <strong><em>Cyclistic members</em></strong> (Subscribers according to the records).</p>
 <p>In addition to conventional bicycles, Cyclistic provides three inclusive options:</p>
-<div class="quarto-layout-panel" data-layout-ncol="3" style="text-align: center;">
+<div class="quarto-layout-panel" style="text-align: center;" data-layout-ncol="3">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
@@ -318,16 +322,16 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>q1_2019 <span class="ot">&lt;-</span> q1_2019 <span class="sc">%&gt;%</span> </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">ride_id =</span> trip_id</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        ,<span class="at">rideable_type =</span> bikeid</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        ,<span class="at">started_at =</span> start_time</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        ,<span class="at">ended_at =</span> end_time</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        ,<span class="at">start_station_name =</span> from_station_name</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        ,<span class="at">start_station_id =</span> from_station_id</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        ,<span class="at">end_station_name =</span> to_station_name</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        ,<span class="at">end_station_id =</span> to_station_id</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        ,<span class="at">member_casual =</span> usertype)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>q1_2019 <span class="ot">&lt;-</span> q1_2019 <span class="sc">|&gt;</span>  </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">ride_id =</span> trip_id,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">rideable_type =</span> bikeid,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">started_at =</span> start_time,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">ended_at =</span> end_time,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">start_station_name =</span> from_station_name,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">start_station_id =</span> from_station_id,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">end_station_name =</span> to_station_name,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">end_station_id =</span> to_station_id,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">member_casual =</span> usertype)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -339,20 +343,20 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert IDs to character for compatibility</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>q1_2019 <span class="ot">&lt;-</span> q1_2019 <span class="sc">%&gt;%</span> </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ride_id =</span> <span class="fu">as.character</span>(ride_id)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        ,<span class="at">rideable_type =</span> <span class="fu">as.character</span>(rideable_type)) </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>q1_2019 <span class="ot">&lt;-</span> q1_2019 <span class="sc">|&gt;</span>  </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ride_id =</span> <span class="fu">as.character</span>(ride_id),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">rideable_type =</span> <span class="fu">as.character</span>(rideable_type)) </span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Consolidate user labels in both datasets</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>q1_2019 <span class="ot">&lt;-</span> q1_2019 <span class="sc">%&gt;%</span> </span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">member_casual =</span> <span class="fu">recode</span>(member_casual</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                                ,<span class="st">"Subscriber"</span> <span class="ot">=</span> <span class="st">"member"</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                                ,<span class="st">"Customer"</span> <span class="ot">=</span> <span class="st">"casual"</span>))</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>q1_2019 <span class="ot">&lt;-</span> q1_2019 <span class="sc">|&gt;</span> </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">member_casual =</span> <span class="fu">recode</span>(member_casual,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"Subscriber"</span> <span class="ot">=</span> <span class="st">"member"</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"Customer"</span> <span class="ot">=</span> <span class="st">"casual"</span>))</span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>q1_2020 <span class="ot">&lt;-</span> q1_2020 <span class="sc">%&gt;%</span> </span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">member_casual =</span> <span class="fu">recode</span>(member_casual</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>                                ,<span class="st">"Subscriber"</span> <span class="ot">=</span> <span class="st">"member"</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>                                ,<span class="st">"Customer"</span> <span class="ot">=</span> <span class="st">"casual"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>q1_2020 <span class="ot">&lt;-</span> q1_2020 <span class="sc">|&gt;</span> </span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">member_casual =</span> <span class="fu">recode</span>(member_casual,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"Subscriber"</span> <span class="ot">=</span> <span class="st">"member"</span>,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"Customer"</span> <span class="ot">=</span> <span class="st">"casual"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -369,6 +373,541 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(q1_2019, q1_2020)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
+<section id="adding-time-metrics" class="level4">
+<h4 class="anchored" data-anchor-id="adding-time-metrics">3.6 Adding Time Metrics</h4>
+<p>To answer how users utilize the service differently, I will extract the date, month, and day of the week from the <code>started_at</code> column. Additionally, I will calculate the <code>ride_length</code> in minutes.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensure date labels are in English for consistency</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setlocale</span>(<span class="st">"LC_TIME"</span>, <span class="st">"English"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "English_United States.1252"</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract date components and calculate duration</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>all_trips <span class="ot">&lt;-</span> all_trips <span class="sc">|&gt;</span> </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">as.Date</span>(started_at),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">month =</span> <span class="fu">format</span>(<span class="fu">as.Date</span>(date), <span class="st">"%m"</span>),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">day =</span> <span class="fu">format</span>(<span class="fu">as.Date</span>(date), <span class="st">"%d"</span>),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> <span class="fu">format</span>(<span class="fu">as.Date</span>(date), <span class="st">"%Y"</span>),</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">day_of_week =</span> <span class="fu">format</span>(<span class="fu">as.Date</span>(date), <span class="st">"%A"</span>),</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">ride_length =</span> <span class="fu">as.numeric</span>(<span class="fu">difftime</span>(ended_at, started_at, <span class="at">units =</span> <span class="st">"mins"</span>)))</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick check of the new columns</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(all_trips <span class="sc">|&gt;</span> <span class="fu">select</span>(started_at, ended_at, ride_length, day_of_week))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+  started_at          ended_at            ride_length day_of_week
+  &lt;dttm&gt;              &lt;dttm&gt;                    &lt;dbl&gt; &lt;chr&gt;      
+1 2019-01-01 00:04:37 2019-01-01 00:11:07        6.5  Tuesday    
+2 2019-01-01 00:08:13 2019-01-01 00:15:34        7.35 Tuesday    
+3 2019-01-01 00:13:23 2019-01-01 00:27:12       13.8  Tuesday    
+4 2019-01-01 00:13:45 2019-01-01 00:43:28       29.7  Tuesday    
+5 2019-01-01 00:14:52 2019-01-01 00:20:56        6.07 Tuesday    
+6 2019-01-01 00:15:33 2019-01-01 00:19:09        3.6  Tuesday    </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="data-cleaning-and-validation" class="level3">
+<h3 class="anchored" data-anchor-id="data-cleaning-and-validation">3.7 Data Cleaning and Validation</h3>
+<p>The final step in the process phase is to remove data that could skew the results. This includes trips with a duration of zero or less, and entries associated with administrative stations (such as “HQ QR”) that do not represent actual customer trips.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter out invalid durations and administrative station entries</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="ot">&lt;-</span> all_trips <span class="sc">|&gt;</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(start_station_name <span class="sc">!=</span> <span class="st">"HQ QR"</span> <span class="sc">|</span> <span class="fu">is.na</span>(start_station_name)) <span class="sc">|&gt;</span> </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ride_length <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify the final dimensions of the clean dataset</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(all_trips_v2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 788189     22</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># station_names validation</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(start_station_id) <span class="sc">|&gt;</span> </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">n_distinct</span>(start_station_name) <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">names =</span> <span class="fu">list</span>(<span class="fu">unique</span>(start_station_name))) <span class="sc">|&gt;</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="at">cols =</span> names)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 48 × 2
+   start_station_id names                               
+              &lt;dbl&gt; &lt;chr&gt;                               
+ 1                2 Buckingham Fountain (Temp)          
+ 2                2 Buckingham Fountain                 
+ 3               19 Loomis St &amp; Taylor St (*)           
+ 4               19 Throop (Loomis) St &amp; Taylor St      
+ 5               23 Orleans St &amp; Elm St (*)             
+ 6               23 Orleans St &amp; Elm St                 
+ 7               89 Financial Pl &amp; Ida B Wells Dr (Temp)
+ 8               89 Financial Pl &amp; Ida B Wells Dr       
+ 9              103 Clinton St &amp; Polk St (*)            
+10              103 Clinton St &amp; Polk St                
+# ℹ 38 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="station-name-standardization" class="level3">
+<h3 class="anchored" data-anchor-id="station-name-standardization">3.8 Station Name Standardization</h3>
+<p>A preliminary group analysis revealed that the same physical docking station was appearing under multiple names due to administrative tags or minor naming updates (e.g., ID 208 recorded as both ‘Ashland Ave’ and ‘Laflin St’). <strong>Failing to consolidate these would lead to fragmented insights</strong>, underreporting the popularity of key locations. I have programmatically unified these identities to ensure a single source of truth for location-based behavior.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Remove temporary and special character tags</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="ot">&lt;-</span> all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(start_station_name, end_station_name), </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                <span class="sc">~</span> <span class="fu">str_remove_all</span>(., <span class="st">" </span><span class="sc">\\</span><span class="st">(Temp</span><span class="sc">\\</span><span class="st">)| </span><span class="sc">\\</span><span class="st">(</span><span class="sc">\\</span><span class="st">*</span><span class="sc">\\</span><span class="st">)"</span>)))</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Consolidate specific ID-name mismatches based on geographic verification</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="ot">&lt;-</span> all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">start_station_name =</span> <span class="fu">case_when</span>(</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    start_station_id <span class="sc">==</span> <span class="dv">19</span>  <span class="sc">~</span> <span class="st">"Loomis St &amp; Taylor St"</span>,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    start_station_id <span class="sc">==</span> <span class="dv">208</span> <span class="sc">~</span> <span class="st">"Ashland Ave &amp; 21st St"</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    start_station_id <span class="sc">==</span> <span class="dv">217</span> <span class="sc">~</span> <span class="st">"Racine Ave &amp; Fulton St"</span>,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    start_station_id <span class="sc">==</span> <span class="dv">286</span> <span class="sc">~</span> <span class="st">"Franklin St &amp; Quincy St"</span>,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> start_station_name</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_station_name =</span> <span class="fu">case_when</span>(</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    end_station_id <span class="sc">==</span> <span class="dv">19</span>  <span class="sc">~</span> <span class="st">"Loomis St &amp; Taylor St"</span>,</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    end_station_id <span class="sc">==</span> <span class="dv">208</span> <span class="sc">~</span> <span class="st">"Ashland Ave &amp; 21st St"</span>,</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    end_station_id <span class="sc">==</span> <span class="dv">217</span> <span class="sc">~</span> <span class="st">"Racine Ave &amp; Fulton St"</span>,</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    end_station_id <span class="sc">==</span> <span class="dv">286</span> <span class="sc">~</span> <span class="st">"Franklin St &amp; Quincy St"</span>,</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> end_station_name</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Final Verification: Checking if any station still has more than one name</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(start_station_id) <span class="sc">|&gt;</span> </span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">unique_names =</span> <span class="fu">n_distinct</span>(start_station_name)) <span class="sc">|&gt;</span> </span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(unique_names <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 0 × 2
+# ℹ 2 variables: start_station_id &lt;dbl&gt;, unique_names &lt;int&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="final-column-selection" class="level3">
+<h3 class="anchored" data-anchor-id="final-column-selection">3.9 Final Column Selection</h3>
+<p>To ensure a consistent analysis between 2019 and 2020, I have opted to remove the <code>gender</code> and <code>birthyear</code> columns. These variables were not collected in the 2020 dataset, and including them would result in an incomplete demographic profile. Additionally, the <code>tripduration</code> column from 2019 was removed in favor of the newly calculated <code>ride_length</code> variable to ensure a uniform measurement unit (minutes) across all records.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove inconsistent or redundant columns</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="ot">&lt;-</span> all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(gender, birthyear, tripduration))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="data-health-check-quality-assurance" class="level3">
+<h3 class="anchored" data-anchor-id="data-health-check-quality-assurance">3.10 Data Health Check &amp; Quality Assurance</h3>
+<p>As a final step before analysis, I conducted a quality check using the <code>skimr</code> library to ensure there are no missing values in critical columns and to examine the distribution of <code>ride_length</code>.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary of the clean dataset</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(all_trips_v2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">all_trips_v2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">788189</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Date</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">POSIXct</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 12%">
+<col style="width: 18%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 7%">
+<col style="width: 11%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: right;">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ride_id</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">788189</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rideable_type</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4770</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">start_station_name</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">611</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">end_station_name</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">612</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">member_casual</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">month</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">day</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">year</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">day_of_week</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: Date</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 12%">
+<col style="width: 17%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: left;">min</th>
+<th style="text-align: left;">max</th>
+<th style="text-align: left;">median</th>
+<th style="text-align: right;">n_unique</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">date</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">2019-01-01</td>
+<td style="text-align: left;">2020-03-31</td>
+<td style="text-align: left;">2020-01-07</td>
+<td style="text-align: right;">181</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 10%">
+<col style="width: 14%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 10%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">p50</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">start_station_id</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">202.15</td>
+<td style="text-align: right;">155.92</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">77.00</td>
+<td style="text-align: right;">174.00</td>
+<td style="text-align: right;">289.00</td>
+<td style="text-align: right;">673.00</td>
+<td style="text-align: left;">▇▅▃▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">end_station_id</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">202.13</td>
+<td style="text-align: right;">156.34</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">77.00</td>
+<td style="text-align: right;">173.00</td>
+<td style="text-align: right;">289.00</td>
+<td style="text-align: right;">675.00</td>
+<td style="text-align: left;">▇▅▃▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">start_lat</td>
+<td style="text-align: right;">365069</td>
+<td style="text-align: right;">0.54</td>
+<td style="text-align: right;">41.90</td>
+<td style="text-align: right;">0.04</td>
+<td style="text-align: right;">41.74</td>
+<td style="text-align: right;">41.88</td>
+<td style="text-align: right;">41.89</td>
+<td style="text-align: right;">41.92</td>
+<td style="text-align: right;">42.06</td>
+<td style="text-align: left;">▁▁▇▂▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">start_lng</td>
+<td style="text-align: right;">365069</td>
+<td style="text-align: right;">0.54</td>
+<td style="text-align: right;">-87.64</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">-87.77</td>
+<td style="text-align: right;">-87.65</td>
+<td style="text-align: right;">-87.64</td>
+<td style="text-align: right;">-87.63</td>
+<td style="text-align: right;">-87.55</td>
+<td style="text-align: left;">▁▁▇▇▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">end_lat</td>
+<td style="text-align: right;">365069</td>
+<td style="text-align: right;">0.54</td>
+<td style="text-align: right;">41.90</td>
+<td style="text-align: right;">0.04</td>
+<td style="text-align: right;">41.74</td>
+<td style="text-align: right;">41.88</td>
+<td style="text-align: right;">41.89</td>
+<td style="text-align: right;">41.92</td>
+<td style="text-align: right;">42.06</td>
+<td style="text-align: left;">▁▁▇▂▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">end_lng</td>
+<td style="text-align: right;">365069</td>
+<td style="text-align: right;">0.54</td>
+<td style="text-align: right;">-87.64</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">-87.77</td>
+<td style="text-align: right;">-87.65</td>
+<td style="text-align: right;">-87.64</td>
+<td style="text-align: right;">-87.63</td>
+<td style="text-align: right;">-87.55</td>
+<td style="text-align: left;">▁▁▇▇▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ride_length</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">19.82</td>
+<td style="text-align: right;">554.87</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">5.52</td>
+<td style="text-align: right;">8.98</td>
+<td style="text-align: right;">15.20</td>
+<td style="text-align: right;">177200.37</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: POSIXct</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 18%">
+<col style="width: 18%">
+<col style="width: 18%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: left;">min</th>
+<th style="text-align: left;">max</th>
+<th style="text-align: left;">median</th>
+<th style="text-align: right;">n_unique</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">started_at</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">2019-01-01 00:04:37</td>
+<td style="text-align: left;">2020-03-31 23:51:34</td>
+<td style="text-align: left;">2020-01-07 07:59:53</td>
+<td style="text-align: right;">738828</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ended_at</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">2019-01-01 00:11:07</td>
+<td style="text-align: left;">2020-05-19 20:10:34</td>
+<td style="text-align: left;">2020-01-07 08:10:57</td>
+<td style="text-align: right;">734450</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify there are no NA values in key analytical columns</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">na_ride_id =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(ride_id)),</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">na_member_casual =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(member_casual)),</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">na_ride_length =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(ride_length))</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  na_ride_id na_member_casual na_ride_length
+       &lt;int&gt;            &lt;int&gt;          &lt;int&gt;
+1          0                0              0</code></pre>
+</div>
+</div>
+<p><strong>Analyst Note:</strong> The <code>skim</code> output confirms a clean dataset with <strong>788,189 observations</strong>. While coordinates (<code>lat</code>/<code>lng</code>) show some missing values (46%), this does not impact the primary business question regarding usage patterns by membership type.</p>
 </section>
 </section>
 

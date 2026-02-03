@@ -124,16 +124,16 @@ The inspection confirmed that the 2019 dataset uses a legacy naming convention (
 
 ```{r}
 #| label: rename-columns
-q1_2019 <- q1_2019 %>% 
-  rename(ride_id = trip_id
-        ,rideable_type = bikeid
-        ,started_at = start_time
-        ,ended_at = end_time
-        ,start_station_name = from_station_name
-        ,start_station_id = from_station_id
-        ,end_station_name = to_station_name
-        ,end_station_id = to_station_id
-        ,member_casual = usertype)
+q1_2019 <- q1_2019 |>  
+  rename(ride_id = trip_id,
+        rideable_type = bikeid,
+        started_at = start_time,
+        ended_at = end_time,
+        start_station_name = from_station_name,
+        start_station_id = from_station_id,
+        end_station_name = to_station_name,
+        end_station_id = to_station_id,
+        member_casual = usertype)
 ```
 
 ### 3.4 Data Consistency & Type Conversion
@@ -146,20 +146,20 @@ Additionally, I am consolidating the `member_casual` labels. The 2019 data uses 
 #| label: type-conversion-and-recode
 
 # Convert IDs to character for compatibility
-q1_2019 <- q1_2019 %>% 
-  mutate(ride_id = as.character(ride_id)
-        ,rideable_type = as.character(rideable_type)) 
+q1_2019 <- q1_2019 |>  
+  mutate(ride_id = as.character(ride_id),
+        rideable_type = as.character(rideable_type)) 
 
 # Consolidate user labels in both datasets
-q1_2019 <- q1_2019 %>% 
-  mutate(member_casual = recode(member_casual
-                                ,"Subscriber" = "member"
-                                ,"Customer" = "casual"))
+q1_2019 <- q1_2019 |> 
+  mutate(member_casual = recode(member_casual,
+                                "Subscriber" = "member",
+                                "Customer" = "casual"))
 
-q1_2020 <- q1_2020 %>% 
-  mutate(member_casual = recode(member_casual
-                                ,"Subscriber" = "member"
-                                ,"Customer" = "casual"))
+q1_2020 <- q1_2020 |> 
+  mutate(member_casual = recode(member_casual,
+                                "Subscriber" = "member",
+                                "Customer" = "casual"))
 ```
 
 ### 3.5 Merging Datasets
@@ -174,3 +174,116 @@ all_trips <- bind_rows(q1_2019, q1_2020)
 # Remove separate data frames to save RAM
 rm(q1_2019, q1_2020)
 ```
+
+#### 3.6 Adding Time Metrics
+
+To answer how users utilize the service differently, I will extract the date, month, and day of the week from the `started_at` column. Additionally, I will calculate the `ride_length` in minutes.
+
+```{r}
+#| label: time-metrics
+# Ensure date labels are in English for consistency
+Sys.setlocale("LC_TIME", "English")
+# Extract date components and calculate duration
+all_trips <- all_trips |> 
+  mutate(date = as.Date(started_at),
+         month = format(as.Date(date), "%m"),
+         day = format(as.Date(date), "%d"),
+         year = format(as.Date(date), "%Y"),
+         day_of_week = format(as.Date(date), "%A"),
+         ride_length = as.numeric(difftime(ended_at, started_at, units = "mins")))
+
+# Quick check of the new columns
+head(all_trips |> select(started_at, ended_at, ride_length, day_of_week))
+```
+
+### 3.7 Data Cleaning and Validation
+
+The final step in the process phase is to remove data that could skew the results. This includes trips with a duration of zero or less, and entries associated with administrative stations (such as "HQ QR") that do not represent actual customer trips.
+
+```{r}
+#| label: cleaning
+# Filter out invalid durations and administrative station entries
+all_trips_v2 <- all_trips |> 
+  filter(start_station_name != "HQ QR" | is.na(start_station_name)) |> 
+  filter(ride_length > 0)
+
+# Verify the final dimensions of the clean dataset
+dim(all_trips_v2)
+
+# station_names validation
+all_trips_v2 |> 
+  group_by(start_station_id) |> 
+  filter(n_distinct(start_station_name) > 1) |> 
+  summarise(names = list(unique(start_station_name))) |>
+  ungroup() |>
+  unnest(cols = names)
+```
+
+### 3.8 Station Name Standardization
+
+A preliminary group analysis revealed that the same physical docking station was appearing under multiple names due to administrative tags or minor naming updates (e.g., ID 208 recorded as both 'Ashland Ave' and 'Laflin St'). **Failing to consolidate these would lead to fragmented insights**, underreporting the popularity of key locations. I have programmatically unified these identities to ensure a single source of truth for location-based behavior.
+
+```{r}
+#| label: station-deep-clean
+# 1. Remove temporary and special character tags
+all_trips_v2 <- all_trips_v2 |> 
+  mutate(across(c(start_station_name, end_station_name), 
+                ~ str_remove_all(., " \\(Temp\\)| \\(\\*\\)")))
+
+# 2. Consolidate specific ID-name mismatches based on geographic verification
+all_trips_v2 <- all_trips_v2 |> 
+  mutate(start_station_name = case_when(
+    start_station_id == 19  ~ "Loomis St & Taylor St",
+    start_station_id == 208 ~ "Ashland Ave & 21st St",
+    start_station_id == 217 ~ "Racine Ave & Fulton St",
+    start_station_id == 286 ~ "Franklin St & Quincy St",
+    TRUE ~ start_station_name
+  ),
+  end_station_name = case_when(
+    end_station_id == 19  ~ "Loomis St & Taylor St",
+    end_station_id == 208 ~ "Ashland Ave & 21st St",
+    end_station_id == 217 ~ "Racine Ave & Fulton St",
+    end_station_id == 286 ~ "Franklin St & Quincy St",
+    TRUE ~ end_station_name
+  ))
+
+# Final Verification: Checking if any station still has more than one name
+all_trips_v2 |> 
+  group_by(start_station_id) |> 
+  summarise(unique_names = n_distinct(start_station_name)) |> 
+  filter(unique_names > 1)
+```
+
+### 3.9 Final Column Selection
+
+To ensure a consistent analysis between 2019 and 2020, I have opted to remove the `gender` and `birthyear` columns. These variables were not collected in the 2020 dataset, and including them would result in an incomplete demographic profile. Additionally, the `tripduration` column from 2019 was removed in favor of the newly calculated `ride_length` variable to ensure a uniform measurement unit (minutes) across all records.
+
+```{r}
+#| label: drop-columns
+# Remove inconsistent or redundant columns
+all_trips_v2 <- all_trips_v2 |> 
+  select(-c(gender, birthyear, tripduration))
+```
+
+### 3.10 Data Health Check & Quality Assurance
+
+As a final step before analysis, I conducted a quality check using the `skimr` library to ensure there are no missing values in critical columns and to examine the distribution of `ride_length`.
+
+```{r}
+#| label: qa-check
+#| message: false
+library(skimr)
+
+# Summary of the clean dataset
+skim(all_trips_v2)
+
+# Verify there are no NA values in key analytical columns
+all_trips_v2 |> 
+  summarise(
+    na_ride_id = sum(is.na(ride_id)),
+    na_member_casual = sum(is.na(member_casual)),
+    na_ride_length = sum(is.na(ride_length))
+  )
+```
+
+**Analyst Note:** The `skim` output confirms a clean dataset with **788,189 observations**. While coordinates (`lat`/`lng`) show some missing values (46%), this does not impact the primary business question regarding usage patterns by membership type.

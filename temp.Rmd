@@ -1,0 +1,614 @@
+---
+title: "Case study 1 - Cyclistic"
+author: "Roberto Antuna"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+```  
+
+```{r setup-locale, echo=FALSE, include=FALSE}
+Sys.setlocale("LC_TIME", "English")
+```  
+
+## **Introduction**  
+
+Cyclistic is a fictional company launched in Chicago in 2016. The company specializes in providing residents with bicycles for use within the city. Currently, they have more than **5,800 bicycles** and more than **650 docking stations**.  
+
+Cyclistic offers flexible plans for utilizing their equipment:  
+
+* Single-ride pass  
+* Full-day pass  
+* Annual membership  
+
+The first two categories are considered ***casual riders*** (Customers according to the records), while the third category consists of ***Cyclistic members*** (Subscribers according to the records).  
+
+In addition to conventional bicycles, Cyclistic provides three inclusive options:  
+
+* Reclining bikes  
+* Hand tricycles  
+* Cargo bikes  
+
+The marketing analyst team, led by Director Lily Moreno, has identified that 92% of users utilize conventional bicycles. Furthermore, 70% of users use the equipment for recreational purposes, while the remaining 30% use it as a means of transportation to work.
+
+Given that annual memberships yield the highest profits, the marketing team aims to better understand users, their needs, and attraction channels (digital media) to **convert casual riders into Cyclistic members**.
+
+For more context, you can find more information in the PDF file [here](https://drive.google.com/drive/folders/1zREQmHobbujngtip4ClWc7TAj3uA0zUn?usp=sharing).
+
+
+### **Ask**  
+
+Three questions will guide the future marketing program:  
+     1. How do annual members and casual riders use Cyclistic bikes differently?  
+     2. Why would casual riders buy Cyclistic annual memberships?  
+     3. How can Cyclistic use digital media to influence casual riders to become members?  
+
+*But for now, the focus will be on the first question*.  
+
+### **Business task**  
+
+The issue to be addressed is finding a way to visualize the differences between the two groups of customers: casual riders and members. To achieve this, the available information will be analyzed and insights will be generated to create marketing strategies aimed at casual riders, with the goal of converting this population into members.  
+
+## **Data Preparation**  
+
+The available information from Cyclistic is contained in *.csv* format files. These files are organized by quarter (Q), resulting in **five files** with data from the **year 2019 & 2020**. 
+
+* Divvy_Trips_2019_Q1.csv  
+* Divvy_Trips_2019_Q2.csv  
+* Divvy_Trips_2019_Q3.csv  
+* Divvy_Trips_2019_Q4.csv  
+* Divvy_Trips_2020_Q1.csv  
+
+The information was provided by the organization of the *"Google Data Analytics"* course, which mentions this **[license](https://divvybikes.com/data-license-agreement)**. For further details, the *.csv* files can be found [here](https://drive.google.com/drive/folders/1zREQmHobbujngtip4ClWc7TAj3uA0zUn?usp=sharing).
+
+Upon taking a general look at the files and their content, it is possible to differentiate between casual riders and members, as well as demographic information about the population using the equipment (gender, age), information about the equipment used, routes, and usage time, along with the loading and unloading stations. Therefore, it can be concluded that the information contained will help address the question: "How do annual members and casual riders use Cyclistic bikes differently?"  
+
+## **Data Processing**  
+
+To understand the information contained in these files, RStudio® will be used, an IDE that works with the R programming language. The following steps will be listed, starting from scratch, that were employed to analyze the data.  
+
+### **Load R packages**  
+
+To conduct the analysis, it is essential to load packages in R:  
+
+```{r loading packages, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(skimr)
+library(janitor)
+```  
+
+### **Load Cyclistic data**  
+
+After loading the packages, we can now load the Cyclistic data. The data is stored and separated by quarters (Q) in *.csv files*, so we will use **readr()**, which is part of the *tidyverse*, and store it as tibbles.
+
+```{r loading .csv fiels, message=FALSE}
+cyclistic_q1 <- read_csv("Divvy_Trips_2019_Q1.csv") %>% as_tibble()
+cyclistic_q2 <- read_csv("Divvy_Trips_2019_Q2.csv") %>% as_tibble()
+cyclistic_q3 <- read_csv("Divvy_Trips_2019_Q3.csv") %>% as_tibble()
+cyclistic_q4 <- read_csv("Divvy_Trips_2019_Q4.csv") %>% as_tibble()
+cyclistic_q5 <- read_csv("Divvy_Trips_2020_Q1.csv") %>% as_tibble()
+```  
+
+### **Data overview**  
+
+After creating these five variables that contain the data for the quarters of 2019 & 2020, a preliminary overview will be provided to understand their structure, content, and other relevant details.  
+
+*Data from Q1 2019*  
+
+```{r q1 file overview 1, message=FALSE, results='hide'}
+skim_without_charts(cyclistic_q1)
+```  
+```{r q1 file overview 2, message=FALSE}
+glimpse(cyclistic_q1)
+```  
+```{r q1 file overview 3, message=FALSE}
+summary(cyclistic_q1)
+```  
+
+*Data from Q2 2019*  
+
+```{r q2 file overview 1, message=FALSE, results='hide'}
+skim_without_charts(cyclistic_q1)
+```  
+```{r q2 file overview 2, message=FALSE}
+glimpse(cyclistic_q1)
+```  
+```{r q2 file overview 3, message=FALSE}
+summary(cyclistic_q1)
+```  
+
+*Data from Q1 2020*  
+
+```{r q5 file overview 1, message=FALSE, results='hide'}
+skim_without_charts(cyclistic_q5)
+```  
+```{r q5 file overview 2, message=FALSE}
+glimpse(cyclistic_q5)
+```  
+```{r q5 file overview 3, message=FALSE}
+summary(cyclistic_q5)
+```  
+
+For reasons of space, the results obtained for the Q3 and Q4 2019 files are not included. However, it is important to mention that the number of columns, as well as the data types of each, their content, and order were verified to maintain a uniform structure and to identify important observations.
+
+As can be observed, the Q2 file has different column names, so it was necessary to standardize the names to ensure consistency with the other Q's from 2019.  
+
+On the other hand, Q1 of 2020 has a different structure, featuring additional columns such as those related to location (latitude and longitude), and it lacks columns like gender or year of birth. Finally, it is evident that the column containing the ride ID is of character type, so adjustments will need to be made to unify the content and create a single data set that contains all the information.
+
+### **Standardizing column names for Q1 to Q4 2019**  
+
+```{r Standardizing colnames Qs 2019, message=FALSE}
+names_col <- c('trip_id', 'start_time', 'end_time', 'bike_id', 'trip_duration',
+               'from_sta_id', 'from_sta_name', 'to_sta_id', 'to_sta_name',
+               'user_type', 'gender', 'user_birth')
+colnames(cyclistic_q1) <- names_col
+colnames(cyclistic_q2) <- names_col
+colnames(cyclistic_q3) <- names_col
+colnames(cyclistic_q4) <- names_col
+```  
+
+### **Adjusting columns for Q1 2020**  
+
+```{r Standardizing colnames Q1 2020, message=FALSE}
+cyclistic_q5 <- cyclistic_q5 %>% 
+  select(ride_id, started_at, ended_at, start_station_id, start_station_name,
+         end_station_id, end_station_name, member_casual, start_lat,
+         start_lng, end_lat, end_lng)
+
+names_col <- c('trip_id', 'start_time', 'end_time', 'from_sta_id', 'from_sta_name',
+               'to_sta_id', 'to_sta_name', 'user_type', 'start_lat', 'start_lng',
+               'end_lat', 'end_lng')
+colnames(cyclistic_q5) <- names_col
+```  
+
+### **Creating first support column**  
+
+The first support column, *"quarter"*, will serve as an identifier to know which quarter of the year the information belongs to.
+
+```{r first support column, message=FALSE}
+cyclistic_q1 <- cyclistic_q1 %>%
+  mutate(quarter = "Q1")
+cyclistic_q2 <- cyclistic_q2 %>%
+  mutate(quarter = "Q2",)
+cyclistic_q3 <- cyclistic_q3 %>%
+  mutate(quarter = "Q3",)
+cyclistic_q4 <- cyclistic_q4 %>%
+  mutate(quarter = "Q4",)
+cyclistic_q5 <- cyclistic_q5 %>%
+  mutate(quarter = "Q5",)
+```  
+
+### **Joining**   
+
+Now that column names were standardized and a identification column was created for each Q, the first step will be to join all the tibbles from 2019.  
+
+```{r joining data q1-q4, message=FALSE}
+joined_trips <- bind_rows(cyclistic_q1, cyclistic_q2, cyclistic_q3, cyclistic_q4)
+```   
+
+Then it is necessary to transform the trip_id column data type:  
+
+```{r transforming trip_id, message=FALSE}
+joined_trips <- joined_trips %>%
+  mutate(trip_id = as.character(trip_id))
+```  
+
+Finally, it is possible to join all the information into one tibble to store all the data and perform the necessary steps to clean and analyze the data.  
+
+```{r joining all data, message=FALSE}
+joined_trips <- bind_rows(joined_trips, cyclistic_q5)
+```  
+
+*Checking for duplicated data:*
+```{r check dupplicated data, message=FALSE}
+duplicate_rows <- joined_trips %>%
+  filter(duplicated(.))
+num_duplicates <- nrow(duplicate_rows)
+print(num_duplicates)
+```  
+*Joined data overview*
+```{r overview joineddata, message=FALSE, results='hide'}
+skim_without_charts(joined_trips)
+summary(joined_trips)
+```  
+
+## **Cleaning**  
+
+As a first step, it is necessary to verify that the station IDs have remained consistent throughout the analysis period to confirm that there is no station with two distinct IDs or different names.  
+
+```{r sta_ID check 1, message=FALSE}
+joined_trips %>%
+  group_by(from_sta_id) %>%
+  summarise(unic_names = n_distinct(from_sta_name)) %>%
+  filter(unic_names > 1)
+```  
+```{r sta_ID check 2, message=FALSE, results='hide'}
+joined_trips %>%
+  group_by(to_sta_id) %>%
+  summarise(unic_names = n_distinct(to_sta_name)) %>%
+  filter(unic_names > 1)
+```  
+
+It was found that there are 25 stations, both starting and ending, that have two different names/IDs. Since there are 50 values to verify, it is feasible to do this manually.  
+
+```{r sta_ID check 3, message=FALSE}
+print(joined_trips %>%
+  group_by(from_sta_id) %>%
+  filter(n_distinct(from_sta_name) > 1) %>%
+  summarise(names = list(unique(from_sta_name))) %>%
+  ungroup()  %>%
+  unnest(cols = names), n=50)
+```  
+```{r sta_ID check 4, message=FALSE, results='hide'}
+print(joined_trips %>%
+        group_by(to_sta_id) %>%
+        filter(n_distinct(to_sta_name) > 1) %>%
+        summarise(names = list(unique(to_sta_name))) %>%
+        ungroup()  %>%
+        unnest(cols = names), n=50)
+```  
+After the verification, it was confirmed that for almost all stations, the changes are due to minor reasons, such as the addition or removal of symbols, spaces, etc. The only notable change is for ID 208, which has two completely different names:  
+
+* 208 Ashland Ave & 21st St  
+* 208 Laflin St & Cullerton St  
+
+However, using Google Maps, it was determined that the distance between both addresses is only one block apart. In conclusion (also supported by using pivot tables in Excel as a double check), the latitudes and longitudes can be copied from the 2020 data to the 2019 data to fill in the relevant columns.  
+
+```{r filling start coord, message=FALSE}
+start_coord <- cyclistic_q5 %>%
+  select(from_sta_id, start_lat, start_lng) %>%
+  distinct()
+
+joined_trips <- joined_trips %>%
+  left_join(start_coord, by = "from_sta_id", suffix = c("", "_ref")) %>%
+  mutate(
+    start_lat = coalesce(start_lat, start_lat_ref),
+    start_lng = coalesce(start_lng, start_lng_ref)
+  ) %>%
+  select(-start_lat_ref, -start_lng_ref)
+```  
+```{r filling end coord, message=FALSE}
+end_coord <- cyclistic_q5 %>%
+  select(to_sta_id, end_lat, end_lng) %>%
+  distinct()
+
+joined_trips <- joined_trips %>%
+  left_join(end_coord, by = "to_sta_id", suffix = c("", "_ref")) %>%
+  mutate(
+    end_lat = coalesce(end_lat, end_lat_ref),
+    end_lng = coalesce(end_lng, end_lng_ref)
+  ) %>%
+  select(-end_lat_ref, -end_lng_ref)
+```  
+
+To conclude the section on coordinates, using glimpse() it is possible to identify that there is a record with a missing ID. A filter was applied to examine the data of this record, revealing that the name of the starting station is "HQ QR," which indicates that these rides were made with bikes used outside of a station. Therefore, all the records with station name "HQ QR" will be removed, declaring a new variable.  
+
+```{r removing fake stations, message=FALSE, results='hide'}
+all_trips <- joined_trips %>%
+  filter(!joined_trips$from_sta_name == "HQ QR")
+```  
+
+Then, using the **skim_without_charts()** function, it is possible to observe that there are no records that are completely empty. Besides that, duplicated records were not found.  
+
+By using **summary()**, it was observed that there are records with birth years that do not make sense (for example, in Q2, the minimum value in the *user_birth* column is 1759, indicating a person of 260 years). Since this is not possible, a valid age range of 5 to 75 years has been established. However, since information such as the day of usage, time, and route is of interest, records outside the age range will not be deleted. Instead, NA will be placed in the *user_birth* column.  
+
+```{r age range, message=FALSE}
+all_trips <- all_trips %>%
+  mutate(user_birth = ifelse(user_birth < 1944 | user_birth > 2014, NA, user_birth))
+```  
+
+To verify that the columns do not have any issues with the data type of any record, a function was created to review each column.   
+
+*Defining the function*
+```{r function check, message=FALSE}
+check_data_types <- function(data) {
+  results <- sapply(data, function(column) {
+    if (is.numeric(column)) {
+      any(is.na(column) | !sapply(column, is.numeric))
+    } else if (is.character(column)) {
+      any(is.na(column) | !sapply(column, is.character))
+    } else if (inherits(column, "POSIXct")) {
+      any(is.na(column) | !sapply(column, function(x) inherits(x, "POSIXct")))
+    } else {
+      FALSE
+    }
+  })
+  return(results)
+}
+```  
+
+*Applying & printing the function*
+```{r applying function, message=FALSE}
+data_type_issues <- check_data_types(all_trips)
+problematic_columns <- names(data_type_issues[data_type_issues])
+print(problematic_columns)
+```  
+
+This function revealed that the *bike_id_*, *trip_duration*, *gender*, *user_birth* and the *"coordinates"* columns have issues due to the presence of NA's. The next step will be to remove bike_id, trip_duration and gender columns since the most updated data (Q1 2020) is not available, and trends may reflect the past rather than the present.
+
+```{r removing columns, message=FALSE}
+all_trips <- all_trips %>%
+  select(-c(bike_id, trip_duration,gender))
+```  
+
+Finally, due to the presence of records with very long duration, a categorization will be established in a new column to support future analyses, as follows:  
+
+* Short: 1 to 3600 seconds (less than 1 hour)  
+* Medium: 3600 to 10800 seconds (less than 3 hrs)  
+* Long: 10801 to 86400 seconds (less than 1 day)  
+* Days: 86401 to 604800 seconds (1 to 7 days)  
+* Weeks: more than 604800 seconds (More than 7 days)
+
+This categorization will be applied in the next step.
+
+### **Creating support columns**  
+
+**Four columns** will be added using ***mutate()*** to complement the information.
+
+The **first column**, *"day_of_week"*, will contain the day of the week when the service was requested (started), for which the ***wday()*** function will be used to extract the day from the date contained in the *"start_time"* column.  
+The **second column**, *"month"*, will contain the month, which will also be obtained from the *"start_time"* column using the ***month()*** function.  
+The **third column**, *"ride_length"*, will display the value **(in seconds)** of the usage time for each bike using the ***difftime()*** function. This column will replace and complete the values in the *"trip_duration"* column.  
+The **fourth column**, *"duration_category"*, will contain the category, depending on the value of *"ride_length"*, according to the above mentioned categorization. 
+
+```{r creating support columns 1-3, message=FALSE}
+all_trips <- all_trips %>%
+  mutate(
+    trip_date = as.Date(all_trips$start_time),
+    day_of_week = wday(start_time, label = TRUE, abbr = FALSE),
+    month_ = month(start_time, label = TRUE, abbr = FALSE),
+    hour_ = lubridate::hour(start_time),
+    ride_length = round(as.numeric(difftime(end_time, start_time, units = "sec")),
+                        digits=1))
+```  
+
+```{r creating support column 4, message=FALSE}
+categorize_duration <- function(data) {
+  data %>%
+    mutate(duration_category = case_when(
+      ride_length <= 1800 ~ "Short",           
+      ride_length <= 10800 ~ "Medium",          
+      ride_length <= 86400 ~ "Large",         
+      ride_length <= 604800 ~ "Days",          
+      TRUE ~ "Weeks"                           
+    ))
+}
+
+all_trips <- categorize_duration(all_trips)
+```  
+
+### **Last changes**  
+
+Consolidating user_type values:  
+
+```{r user_type values, message=FALSE}
+all_trips <- all_trips %>%
+mutate(user_type = recode(user_type
+,"Subscriber" = "member"
+,"Customer" = "casual"))
+```  
+
+It is necessary to confirm that there are no abnormal values (such as negative times):  
+
+```{r abnormal times, message=FALSE}
+abnormalities <- all_trips %>% 
+  filter(ride_length < 0) %>% 
+  select(start_time, end_time, ride_length)
+print(abnormalities)
+```  
+
+Thirteen records were found where the time is negative, which should not occur. Notably, all 13 records are from March 11, between 01:00 and 02:00. It is concluded that the 13 records are not sufficient to impact the analysis, so it is decided to remove them.  
+
+```{r data updated, message=FALSE}
+all_trips <- all_trips %>% 
+  filter(ride_length > 0)
+```  
+
+Finally, some columns data type will be transformed.  
+
+```{r transforming final data, message=FALSE}
+all_trips <- all_trips %>%
+  mutate(
+    trip_id = as.character(trip_id),
+    from_sta_id = as.character(from_sta_id),
+    to_sta_id = as.character(to_sta_id),
+    start_lat = as.numeric(start_lat),
+    start_lng = as.numeric(start_lng),
+    end_lat = as.numeric(end_lat),
+    end_lng = as.numeric(end_lng),
+    hour_ = factor(hour_, ordered = TRUE),
+    user_type = factor(user_type),
+    quarter = factor(quarter, levels = c("Q1", "Q2", "Q3", "Q4", "Q5"), ordered = TRUE),
+    duration_category = factor(duration_category,
+                               levels = c("Short", "Medium", "Large", "Days", "Weeks"),
+                               ordered = TRUE)
+  )
+```  
+
+*Cleaned data overview*
+```{r overview cleaned data, message=FALSE}
+skim_without_charts(all_trips)
+summary(all_trips)
+```  
+
+## **Data Analyzing**  
+
+General statistics will be generated to begin understanding the behavior of the information, initial trends, and to identify the existence or absence of possible patterns.  
+
+### **Summary of the rides duration:**  
+
+```{r ride_length stats , message=FALSE}
+summary(all_trips$ride_length)
+```  
+A summary of the ride duration indicates that the **average time is approximately 24 minutes**. The shortest ride is only 1 second, while the longest ride is approximately 123 days, resulting in a very wide range of duration. Therefore, a categorization of ride types was carried out, with the following distribution:  
+
+```{r duration type stats , message=FALSE}
+summary_data <- all_trips %>%
+  group_by(duration_category) %>%
+  summarise(
+    Min = min(ride_length, na.rm = TRUE),
+    Median = median(ride_length, na.rm = TRUE),
+    Mean = mean(ride_length, na.rm = TRUE),
+    Max = max(ride_length, na.rm = TRUE),
+    Count = n()
+  )
+print(summary_data)
+```  
+
+```{r duration type plot, fig.width=7, fig.height=4.5, message=FALSE}
+ggplot(summary_data, aes(x = duration_category, y = Count, fill = Count)) +
+  geom_bar(stat = "identity", alpha = 0.8, color = "black", show.legend = FALSE) +
+  geom_text(aes(label = Count), vjust = -0.5, size = 3, color = "black") +  
+  scale_fill_gradient(low = "lightblue", high = "blue") + 
+  labs(title = "Number of rides by duration category", 
+       x = "Duration Category",
+       y = "Number of Rides") +
+  theme_minimal(base_size = 14) +  
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.title.x = element_text(size = 12),
+        axis.title.y = element_text(size = 12)) + 
+  annotate("text", x = 1:5, 
+           y = -0.05 * max(summary_data$Count), 
+           label = c("-30 min", "30 min to 3 hrs",
+                     "3 hrs to 1 day", "1 to 7 days", "+7 days"))
+```  
+According to the previous table, **86.8% of the rides** had a duration of **no more than 30 minutes**. Additionally, rides not exceeding 3 hours represented a total of 12.9%. Together, they account for 99.7% of the trips, concluding that **users, in general, utilize the service for trips that do not exceed 3 hours**.  
+
+### **Comparison according to the users' type**  
+
+```{r user type stats 1 , message=FALSE}
+summary(all_trips$user_type)
+```  
+
+```{r user type stats 2 , fig.width=3.5, fig.height=2.5, message=FALSE}
+user_type_counts <- all_trips %>%
+  group_by(user_type) %>%
+  summarise(count = n()) %>%
+  mutate(percentage = (count / sum(count)) * 100) %>%
+  ungroup()
+
+ggplot(user_type_counts, aes(x = "", y = percentage, fill = user_type)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  labs(title = "Percentage of user type",
+       fill = "User type") +
+  theme_void(base_size = 14) +
+  geom_text(aes(label = paste0(round(percentage, 1), "%\n(n = ", count, ")")), 
+            position = position_stack(vjust = 0.5), angle = -12, color = "white", size = 3, fontface = "bold") +
+  theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"))
+```  
+
+Regarding the type of user (casual rider or member), it is observed that just over 3.3 million rides correspond to annual members, maintaining an **~80/20 trend**, with the **majority being** customers being **members**.  
+
+```{r user type stats 3 , message=FALSE}
+mean_values <- aggregate(all_trips$ride_length ~ all_trips$user_type, FUN = mean)
+median_values <- aggregate(all_trips$ride_length ~ all_trips$user_type, FUN = median)
+max_values <- aggregate(all_trips$ride_length ~ all_trips$user_type, FUN = max)
+min_values <- aggregate(all_trips$ride_length ~ all_trips$user_type, FUN = min)
+data.frame(
+  Member_Type = mean_values[[1]],
+  Mean_RideLength = mean_values[[2]],
+  Median_RideLength = median_values[[2]],
+  Max_RideLength = max_values[[2]],
+  Min_RideLength = min_values[[2]]
+)
+```  
+Despite the fact that **casual riders** are in the minority, it is noteworthy that the rides taken last, on average, nearly one hour, which is **four times longer than the rides made by members** (around 15 minutes). Furthermore, for some currently unknown reason, the longest recorded ride corresponds to a casual customer, given that the current pass types are only for single rides, full-day use, and annual members.  
+
+```{r user type stats 4 , message=FALSE}
+all_trips %>%
+  group_by(user_type, duration_category) %>%
+  summarise(count = n(), .groups = 'drop') %>%
+  pivot_wider(names_from = duration_category, values_from = count, values_fill = 0)
+```  
+
+This table presents interesting data related to the travel behavior of both user types. On one hand, **members make the majority of short rides, accounting for 95%** of all the rides made by these users, concluding that members primarily use the service for short distances of less than 30 minutes.  
+
+On the other hand, **casual riders** have a higher number of rides recorded in the other categories (medium, long, and day rides), concentrating almost 99% of rides between short and medium distances. This concludes that these users also prefer to use the service for rides of less than 3 hours, but they **are also the ones who utilize the service more for long rides**.  
+
+### **Ride length per user type and day of week**  
+
+```{r day of week stats 2 , message=FALSE}
+summary_data_2 <- all_trips %>%
+  group_by(user_type, day_of_week) %>% 
+  summarise(number_of_rides = n(),
+            average_duration = mean(ride_length),
+            .groups = 'drop')%>%
+  arrange(user_type, day_of_week)
+print(summary_data_2)
+```   
+
+In general, the average ride duration is practically the same for all days, depending on the type of user. For **casual riders**, it is observed that **Thursday is the day when the average ride duration is slightly longer**. In the case of **members, Saturday is the day when the average ride duration is the longest**.  
+
+Regarding the number of rides made by user type depending on the day of the week, it is noted that **casual riders make the highest number of rides on Saturday**, followed by Sunday, while **Tuesday is the day with the least rides**.  
+
+This contrasts with **members**, as they make the highest number of rides **on Tuesday, while Sunday is the day with the fewest rides**, followed by Saturday, as shown in the below plot:  
+
+```{r day of week stats 3 , fig.width=6, fig.height=3, message=FALSE}
+ggplot(summary_data_2, aes(x = day_of_week, y = number_of_rides, fill = user_type)) +
+  geom_bar(stat = "identity", position = "dodge") + 
+  labs(title = "Number of rides by user type during the Week",
+       x = "Day of the Week",
+       y = "Number of Rides",
+       fill = "User type") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```  
+
+### **Distribution of the number of rides and the time of day**  
+
+```{r time of day stats 1, fig.width=8, fig.height=6, message=FALSE}
+all_trips %>%
+  group_by(user_type, hour_, day_of_week) %>% 
+  summarise(number_of_rides = n(),
+            .groups = 'drop') %>%
+  arrange(user_type, hour_) %>%
+  ggplot(aes(x = factor(hour_), y = number_of_rides, fill = user_type)) +
+  geom_bar(stat = "identity", position = "dodge") + 
+  facet_wrap(~day_of_week, ncol = 2) +
+  labs(title = "Number of rides by user type during the day",
+       x = "Time of day",
+       y = "Number of Rides",
+       fill = "User type") +
+  theme_minimal() +
+  scale_x_discrete(breaks = levels(factor(all_trips$hour_))[seq(1,length(levels(factor(all_trips$hour_))), by = 2)]) +
+  theme(axis.text.x = element_text(size = 8, angle = 75, hjust = 1, vjust = 1),
+        strip.text = element_text(size = 10))
+```  
+
+Upon closely analyzing the distribution of the number of rides made throughout each day of the week, according to the time of day, it can be reaffirmed that for **casual riders, weekends are when they have the most activity**, while for **members, it is during the weekdays** (Monday to Friday), particularly on Tuesdays and Wednesdays.  
+
+During **weekdays**, there is a clear trend for member users, with activity peaks in the mornings from **7 to 9 AM** (regular work entry schedules) and in the afternoons from **4 to 6 PM** (regular work exit schedules). On the other hand, casual users during the weekdays show a more concentrated activity in the afternoons, also between **4 and 6 PM**.  
+
+On **weekends**, the activity trend is similar between both type of users, and it can be observed that the number of rides for both is close, with a peak in activity between **11 AM and 2 PM**.  
+
+## **Key Takeaways**  
+
+### **General**  
+
+* According to the records **from Q1-4 of 2019 and Q1 of 2020**, and after a verification, cleaning, and analysis process, there are records of **4,241,111 rides**  
+* Of the total rides, **86.8%** correspond to **short trips**, meaning a duration of no more than 30 minutes, while **12.9%** correspond to **medium trips**, meaning a duration of no more than 3 hours  
+* **Member users represent 78.2% of the total rides**, while casual users account for 21.8%  
+* On average, **member users take rides of ~15 minutes**  
+* On average, **casual users take rides of ~1 hour**  
+
+| **User Type** | **Duration Range <br> of Rides** | **Total Rides** | **% Short Rides** | **Avg Longest <br> Duration** | **Day with <br> Most Rides** | **Day with <br> Fewest Rides** | **Usage Peaks**|
+|------------------|--------------------------------------|------------------|------------------|---------------------------|----------------------------|------------------------------|----------------------------------|
+| **Member Users** | From 1 second <br> to 105 days | 3,315,776 | 94.4% | Saturdays <br> (16 min) | Tuesdays and Wednesdays | Sundays and <br> Saturdays | Weekdays: <br> 7-9 am, 4-6 pm <br> Weekend: <br> 11 am - 1 pm |
+| **Casual Users** | From 2 seconds <br> to 123 days | 925,345 | 98.6% | Thursdays <br> (64 min) | Saturdays and Sundays | Tuesdays and <br> Wednesdays | Weekdays: <br> 4-6 pm <br> Weekend: <br> 11 am - 1 pm |
+
+***General Conclusions:***  
+
+Members primarily use the service for short-distance travel, mainly during weekdays. Based on the hourly distribution throughout the day, it is likely that they utilize the service to commute to and from work. On weekends, they use the service around midday, but in lower proportions compared to weekdays.  
+
+Casual riders, on the other hand, utilize the service for more recreational purposes, with higher numbers of trips on weekends around midday. During the week, they use the service for afternoon trips, around 4 pm. Additionally, compared to member users, their trips have a longer average duration, and they have a higher number of trips lasting more than 30 minutes.  
+
+## **Next Steps**  
+
+Finally, a .csv file with the data cleaned and organized will be generated so it can be used in another tool, **Tableau**, in order to create a dashboard with the key findings.  
+
+```{r export, eval=FALSE, message=FALSE, results='hide'}
+write.csv(all_trips, file = 'cyclistic_data.csv')
+``` 
