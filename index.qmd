@@ -695,8 +695,10 @@ all_trips_v2 |>
   guides(color = guide_legend(override.aes = list(alpha = 1, size = 3)))
 ```
 
-::: {layout-ncol="1" style="text-align: center;"}
-![Image 5. Top 10 Starting Stations by User Type - Casuals in red, Members in blue](images/chicago_map.png)
+::: map-container
+<iframe src="https://www.google.com/maps/d/u/0/embed?mid=1nD8INEDXijpqi46qh8JIxTnFKQ34oHg&amp;ehbc=2E312F" width="640" height="480">
+
+</iframe>
 :::
 
 > **Analyst Note:** The visual evidence is conclusive. When comparing the data clusters to the functional city map, we find that **Casual riders** are geographically "locked" to leisure corridors like **Navy Pier (Streeter Dr & Grand Ave)** and the **Museum Campus (Shedd Aquarium)**. Conversely, **Members** are concentrated in the city’s "nervous system"—the transit hubs near **Union and Ogilvie Stations (e.g., Canal St & Adams St)** that facilitate the daily professional commute.
