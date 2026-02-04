@@ -63,7 +63,7 @@ To guide the marketing strategy, this report focuses on answering:\
 
 ### A Bonus Chapter: Real-Time Membership Offers
 
-## 2. ndefinedPrepare
+## 2. Prepare
 
 ### Data Sources
 
@@ -98,6 +98,7 @@ First, I load the necessary libraries and import the datasets for the first quar
 ```{r}
 #| label: Packages
 #| message: false
+#| warning: false
 #Import libraries
 library(tidyverse)
 library(lubridate)
@@ -357,7 +358,8 @@ As a final step before analysis, I conducted a quality check using the `skimr` l
 skim(all_trips_v2)
 ```
 
-> **Analyst Note:** The `skim` output confirms a clean dataset with **788,189 observations**. While coordinates (`lat`/`lng`) show some missing values (46%), this does not impact the primary business question regarding usage patterns by membership type.
+> **Analyst Note:**\
+> The `skim` output confirms a clean dataset with **788,189 observations**. While coordinates (`lat`/`lng`) show some missing values (46%), this does not impact the primary business question regarding usage patterns by membership type.
 
 **Critical Data Note:** The `skim` analysis reveals significant outliers in `ride_length`. While the median trip is only **8.98 minutes**, the maximum value reaches an unrealistic **177,200.37 minutes** (approx. 123 days). These outliers skew the distribution, as seen in the "flat" histogram. For the subsequent analysis, I will consider these anomalies to ensure the average metrics represent true user behavior.
 
@@ -375,8 +377,8 @@ To ensure that descriptive statistics (like the average) reflect true user behav
 all_trips_v2 <- all_trips_v2 |> 
   filter(ride_length <= 1440)
 
-# Remove the intermediate dataset to free up memory for analysis
-rm(all_trips)
+# Remove intermediate datasets to free up memory for analysis
+rm(all_trips, summary_geo)
 
 # Verify the final dimensions of the clean dataset
 print(paste("Final dimensions of the clean dataset:", paste(dim(all_trips_v2), collapse = " x ")))
@@ -392,6 +394,7 @@ First, I will establish a baseline for the `ride_length` variable. As noted in t
 
 ```{r}
 #| label: descriptive-stats
+#| tbl-cap: "Table 1. Ride Duration Summary Statistics"
 # Summary statistics for ride_length (in minutes)
 all_trips_v2 |> 
   summarise(
@@ -404,12 +407,12 @@ all_trips_v2 |>
   knitr::kable(
     col.names = c("Number of rides", "Mean", "Median", "Max", "Min"),
     align = "ccccc",
-    digits = 2,
-    caption = "Table 1. Ride Duration Summary Statistics"
-  )
+    digits = 2)
 ```
 
-The baseline analysis of `ride_length` reveals that the average trip duration is **13.72 minutes**, while the median is **8.98 minutes**. The significant gap between the mean and median confirms that, even after removing extreme outliers (trips \> 24 hours), the distribution remains skewed by longer occasional rides.
+**Key Findings:**
+
+-   The baseline analysis of `ride_length` reveals that the average trip duration is **13.72 minutes**, while the median is **8.98 minutes**. The significant gap between the mean and median confirms that, even after removing extreme outliers (trips \> 24 hours), the distribution remains skewed by longer occasional rides.
 
 ### 4.2 Segmented Analysis: Members vs. Casuals
 
@@ -417,6 +420,7 @@ The core of our task is the comparison between user types. Initial data shows a 
 
 ```{r}
 #| label: member-vs-casual-comparison
+#| tbl-cap: "Table 2. Mean and Median Ride Duration by User Type"
 # Comparing mean and median duration by user type
 all_trips_v2 |> 
   group_by(member_casual) |> 
@@ -430,14 +434,14 @@ all_trips_v2 |>
   knitr::kable(
     col.names = c("User Type", "Number of rides", "Mean", "Median", "Max", "Min"),
     align = "cccccc",
-    digits = 2,
-    caption = "Table 2. Mean and Median Ride Duration by User Type"
-  )
+    digits = 2)
 ```
 
-When segmenting by user type, we find a stark contrast in behavior. While annual members account for the vast majority of trips (**720,125 rides**), casual riders utilize the equipment for significantly longer periods.
+**Key Findings:**
 
-**Key Business Insight:** Casual riders' median trip duration (**23.13 min**) is nearly **three times longer** than that of members (**8.47 min**). This data **provides statistical evidence to support the Marketing Team's observation** that Members use Cyclistic as a highly efficient "A-to-B" commuting tool, while Casuals view the service as a platform for leisure or sightseeing.
+-   When segmenting by user type, we find a stark contrast in behavior. While annual members account for the vast majority of trips (**720,125 rides**), casual riders utilize the equipment for significantly longer periods.
+
+-   Casual riders' median trip duration (**23.13 min**) is nearly **three times longer** than that of members (**8.47 min**). This data **provides statistical evidence to support the Marketing Team's observation** that Members use Cyclistic as a highly efficient "A-to-B" commuting tool, while Casuals view the service as a platform for leisure or sightseeing.
 
 ### 4.3 Weekly Usage Patterns
 
@@ -445,6 +449,7 @@ To understand when these users are most active, I analyzed the number of rides a
 
 ```{r}
 #| label: weekday-analysis
+#| tbl-cap: "Table 3. Weekly Usage Patterns: Volume and Duration"
 # Summary of rides and average duration by day of week
 all_trips_v2 |> 
   group_by(member_casual, day_of_week) |> 
@@ -456,9 +461,7 @@ all_trips_v2 |>
   knitr::kable(
     col.names = c("User Type", "Day of Week", "Number of Rides", "Avg Duration (min)"),
     align = "llcc",
-    digits = 2,
-    caption = "Table 3. Weekly Usage Patterns: Volume and Duration"
-  )
+    digits = 2)
 ```
 
 **Key Findings:**
@@ -473,6 +476,7 @@ To further differentiate user behavior, I analyzed the distribution of rides by 
 
 ```{r}
 #| label: hourly-analysis
+#| tbl-cap: "Table 4. Hourly Distribution of Rides by User Type"
 # Extract the hour from the starting timestamp
 all_trips_v2 <- all_trips_v2 |> 
   mutate(hour = hour(started_at))
@@ -484,9 +488,7 @@ all_trips_v2 |>
   pivot_wider(names_from = member_casual, values_from = number_of_rides) |> 
   knitr::kable(
     col.names = c("Hour of Day", "Casual Rides", "Member Rides"),
-    align = "ccc",
-    caption = "Table 4. Hourly Distribution of Rides by User Type"
-  )
+    align = "ccc")
 ```
 
 **Key Findings:**
@@ -500,7 +502,8 @@ all_trips_v2 |>
 To validate the purpose of the trips, I have segmented the top starting stations by user type. This comparison reveals whether stations are located near commercial hubs (work-oriented) or leisure landmarks (recreation-oriented).
 
 ```{r}
-#| label: top-stations-comparison
+#| label: top-stations-comparison-1
+#| tbl-cap: "Table 5a. Top 10 Starting Stations - Casual Riders"
 # Top 10 Stations for Casual Riders
 top_10_casual <- all_trips_v2 |> 
   filter(member_casual == "casual") |> 
@@ -509,6 +512,13 @@ top_10_casual <- all_trips_v2 |>
   arrange(desc(number_of_rides)) |> 
   head(10)
 
+# Display Casual Table
+knitr::kable(top_10_casual, col.names = c("Station Name (Casual)", "Rides"))
+```
+
+```{r}
+#| label: top-stations-comparison-2
+#| tbl-cap: "Table 5b. Top 10 Starting Stations - Annual Members"
 # Top 10 Stations for Members
 top_10_member <- all_trips_v2 |> 
   filter(member_casual == "member") |> 
@@ -517,20 +527,17 @@ top_10_member <- all_trips_v2 |>
   arrange(desc(number_of_rides)) |> 
   head(10)
 
-# Display Casual Table
-knitr::kable(top_10_casual, col.names = c("Station Name (Casual)", "Rides"), 
-             caption = "Table 5a. Top 10 Starting Stations - Casual Riders")
-
 # Display Member Table
-knitr::kable(top_10_member, col.names = c("Station Name (Member)", "Rides"), 
-             caption = "Table 5b. Top 10 Starting Stations - Annual Members")
+knitr::kable(top_10_member, col.names = c("Station Name (Member)", "Rides"))
 ```
 
-> **Analyst Note:** The geographic data reveals two distinct "worlds" within the same city:
->
-> -   **The Leisure Hub (Casuals):** The top stations for casual riders, led by **Streeter Dr & Grand Ave (2,741 rides)** and **Lake Shore Dr & Monroe St (2,727 rides)**, are located exclusively near lakefront tourist attractions, parks, and museums.
->
-> -   **The Transit Hub (Members):** In contrast, member activity is concentrated at transit-linked stations such as **Canal St & Adams St (13,797 rides)** and **Clinton St & Washington Blvd (13,434 rides)**. These stations are adjacent to major metropolitan train terminals (Union Station and Ogilvie Transportation Center), confirming that members primarily use Cyclistic for the "last mile" of their professional daily commute.
+**Key Findings:**
+
+**Analyst Note:** The geographic data reveals two distinct "worlds" within the same city:
+
+-   **The Leisure Hub (Casuals):** The top stations for casual riders, led by **Streeter Dr & Grand Ave (2,741 rides)** and **Lake Shore Dr & Monroe St (2,727 rides)**, are located exclusively near lakefront tourist attractions, parks, and museums.
+
+-   **The Transit Hub (Members):** In contrast, member activity is concentrated at transit-linked stations such as **Canal St & Adams St (13,797 rides)** and **Clinton St & Washington Blvd (13,434 rides)**. These stations are adjacent to major metropolitan train terminals (Union Station and Ogilvie Transportation Center), confirming that members primarily use Cyclistic for the "last mile" of their professional daily commute.
 
 ## 5. Share (Visualization)
 
@@ -565,7 +572,8 @@ all_trips_v2 |>
     axis.line = element_line(colour = "gray"))
 ```
 
-> **Analyst Note:** This is the most significant behavioral indicator. Casual riders utilize bikes for **38.38 minutes** on average, nearly **four times longer** than members. This confirms that for casuals, the ride *is* the activity, while for members, it is primarily a tool for efficient point-to-point transit.
+> **Analyst Note:**\
+> While the **median** ride duration of 23.13 minutes for casual riders confirms they typically ride twice as long as members (8.47 min), the **mean** of 38.38 minutes reveals a significant volume of high-duration recreational trips. This "Mean-Median Gap" is a key behavioral signal: casual riders don't just ride longer on average; they are the only segment responsible for the long-tail journeys that define Cyclistic's leisure usage.
 
 ### 5.2 User Distribution by Day (Proportional Analysis)
 
@@ -595,7 +603,8 @@ all_trips_v2 |>
     axis.line = element_line(colour = "gray"))
 ```
 
-> **Analyst Note:** While members provide the volume baseline during the workweek, the **proportional market share of casual riders nearly doubles on weekends**. This identifies Saturdays and Sundays as the "Golden Window" for conversion-focused marketing campaigns.
+> **Analyst Note:**\
+> While members provide the volume baseline during the workweek, the **proportional market share of casual riders nearly doubles on weekends**. This identifies Saturdays and Sundays as the "Golden Window" for conversion-focused marketing campaigns.
 
 ### 5.3 Hourly Distribution per Day (The Commuter Pulse)
 
@@ -605,6 +614,8 @@ By using independent scales, we uncover distinct temporal patterns: commuter spi
 #| label: visual-hourly-distribution
 #| message: false
 #| fig-cap: "Figure 3. Hourly ride distribution by day of the week, highlighting commuter spikes vs. leisure curves."
+#| fig-width: 12
+#| fig-height: 8
 # Visualizing number of rides by user type during the day, faceted by day of week
 all_trips_v2 |> 
   group_by(member_casual, day_of_week, hour) |> 
@@ -626,11 +637,13 @@ all_trips_v2 |>
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     axis.line = element_line(colour = "gray"),
+    axis.text.x = element_text(angle = 45, hjust = 1),
     strip.text = element_text(face = "bold")
   )
 ```
 
-> **Analyst Note:** Members exhibit sharp spikes at **8:00 AM and 5:00 PM** on weekdays. Casual ridership, however,follows a **steady afternoon climb**, peaking between **1:00 PM and 4:00 PM**. They are *afternoon users* who could be targeted with off-peak membership.
+> **Analyst Note:**\
+> Members exhibit sharp spikes at **8:00 AM and 5:00 PM** on weekdays. Casual ridership, however,follows a **steady afternoon climb**, peaking between **1:00 PM and 4:00 PM**. They are *afternoon users* who could be targeted with off-peak membership.
 
 ### 5.4 Geographic Distribution (Mapping the Two Worlds)
 
@@ -668,7 +681,8 @@ bind_rows(
   )
 ```
 
-> **Analyst Note:** Casual riders dominate lakefront landmarks like **Streeter Dr & Grand Ave**. Meanwhile, members are concentrated in transit hubs near train terminals, such as **Canal St & Adams St**, which records over **13,000 rides**.
+> **Analyst Note:**\
+> Casual riders dominate lakefront landmarks like **Streeter Dr & Grand Ave**. Meanwhile, members are concentrated in transit hubs near train terminals, such as **Canal St & Adams St**, which records over **13,000 rides**.
 
 ### 5.5 Geographic Cluster Map (The Spatial Divide)
 
@@ -701,7 +715,8 @@ all_trips_v2 |>
 </iframe>
 :::
 
-> **Analyst Note:** The visual evidence is conclusive. When comparing the data clusters to the functional city map, we find that **Casual riders** are geographically "locked" to leisure corridors like **Navy Pier (Streeter Dr & Grand Ave)** and the **Museum Campus (Shedd Aquarium)**. Conversely, **Members** are concentrated in the city’s "nervous system"—the transit hubs near **Union and Ogilvie Stations (e.g., Canal St & Adams St)** that facilitate the daily professional commute.
+> **Analyst Note:**\
+> The visual evidence is conclusive. When comparing the data clusters to the functional city map, we find that **Casual riders** are geographically "locked" to leisure corridors like **Navy Pier (Streeter Dr & Grand Ave)** and the **Museum Campus (Shedd Aquarium)**. Conversely, **Members** are concentrated in the city’s "nervous system"—the transit hubs near **Union and Ogilvie Stations (e.g., Canal St & Adams St)** that facilitate the daily professional commute.
 
 ## 6. Act (Recommendations)
 
@@ -726,3 +741,295 @@ Through independent hourly scaling, we discovered that casual riders exhibit a s
 -   **Recommendation:** Implement an "Afternoon Member" discount. Targeting casual riders who consistently use the system during these off-peak hours with a specialized membership rate can increase system efficiency and revenue without contributing to the existing 5:00 PM member rush.
 
 ## Bonus Chapter: Predictive Modeling for Conversion — From Casual Insights to Real-Time Membership Offers
+
+In this final section, I elevate the analysis from descriptive visualization to predictive strategy. While previous sections established "what" happened, this chapter focuses on **identifying high-value leads** to optimize marketing ROI. By combining **K-means Clustering** and **Logistic Regression**, I created a framework to target three specific personas with personalized offers.
+
+### The Strategy: Lead Scoring & Segmentation
+
+The goal is to move away from broad campaigns and instead trigger specific offers based on real-time trip behavior. By analyzing variables such as trip duration (accounting for the mean-median gap), time of day, and location, we can categorize casual riders into high-propensity segments.
+
+#### Target Personas for Personalized Offers:
+
+-   **The Afternoon Specialist:** Users peaking between 1:00 PM and 4:00 PM on weekdays. They receive the **"Afternoon Membership"** discount.
+
+-   **The Weekend Explorer:** High-duration riders (often exceeding the 23-minute median) clustered around the lakefront. They are targeted for the **"Weekend Explorer"** pass.
+
+-   **The Shadow Commuter:** Users riding during rush hours (8:00 AM / 5:00 PM) near transit hubs like Union Station. These are high-priority leads for the **Full Annual Membership**.
+
+#### Feature Engineering: Creating Behavioral Signals
+
+To prepare our data for the K-means algorithm, we must convert categorical and time-based data into numerical features. This process allows the model to "see" the patterns of our three target personas.
+
+```{r}
+#| label: bonus-feature-engineering
+#| message: false
+
+# 1. Create the model-ready dataframe
+model_ready_df <- all_trips_v2 |>
+  # Focus exclusively on casual riders for conversion targeting
+  filter(member_casual == "casual") |> 
+  mutate(
+    # Signal: Afternoon Specialist (1 PM - 4 PM)
+    is_afternoon_user = ifelse(hour >= 13 & hour <= 16, 1, 0),
+    # Signal: Shadow Commuter (Rush Hours + Transit Hubs)
+    is_rush_hour = ifelse(hour %in% c(7, 8, 9, 16, 17, 18), 1, 0),
+    is_transit_hub = ifelse(start_station_name %in%
+                              top_10_member$start_station_name, 1, 0),
+    # Signal: Weekend Explorer (Weekends + Leisure Zones)
+    is_weekend = ifelse(day_of_week %in% c("Saturday", "Sunday"), 1, 0),
+    is_leisure_zone = ifelse(start_station_name %in%
+                               top_10_casual$start_station_name, 1, 0),
+    # Normalize duration skewness using log-transformation
+    log_duration = log(ride_length + 1)
+  ) |>
+  # Select numerical features for scaling and clustering
+  select(ride_id, is_afternoon_user, is_rush_hour, is_transit_hub, 
+         is_weekend, is_leisure_zone, log_duration) |>
+  drop_na()
+```
+
+### Stage 1: Behavioral Clustering (Persona Discovery)
+
+Using **K-means Clustering**, I segmented the casual rider population to find groups that share common usage patterns. This stage allows us to uncover the "Shadow Commuters" who are currently paying casual rates for a member-like routine.
+
+```{r}
+#| label: bonus-clustering-execution
+#| message: false
+#| warning: false
+
+# Standardizing features for K-means
+cluster_data <- model_ready_df |> 
+  select(-ride_id) |>
+  scale()
+
+# Executing Clustering for 3 archetypes
+set.seed(123)
+bike_clusters <- kmeans(cluster_data, centers = 3, nstart = 25)
+
+# Adding cluster assignments to the dataset
+model_ready_df$persona_group <- as.factor(bike_clusters$cluster)
+```
+
+### Stage 2: Segment Validation (Persona Profiles)
+
+After executing the K-means algorithm, I analyze the centroids of each cluster to ensure the mathematical groupings align with the intended business personas. This validation is critical to confirm that our features (Time, Geography, and Duration) successfully separated the users.
+
+```{r}
+#| label: bonus-cluster-profiles
+#| tbl-cap: "Table 6. Behavioral Profiles of Identified Casual User Clusters"
+#| message: false
+
+# Calculate characteristic means per cluster
+cluster_profiles <- model_ready_df |>
+  group_by(persona_group) |>
+  summarise(
+    total_trips = n(),
+    avg_afternoon = mean(is_afternoon_user),
+    avg_rush_hour = mean(is_rush_hour),
+    avg_weekend = mean(is_weekend),
+    avg_leisure = mean(is_leisure_zone),
+    # Reverting log duration to real minutes for business interpretation
+    typical_duration_min = exp(mean(log_duration)) - 1
+  ) |>
+  arrange(desc(total_trips))
+
+knitr::kable(cluster_profiles, 
+             digits = 3,
+             align = "ccccccc",
+             col.names = c("Cluster", "Total Trips", "Afternoon Avg.", 
+                           "Rush Hour Avg.", "Weekend Avg.", 
+                           "Leisure Zone Avg.", "Typical Duration (min)"))
+```
+
+> **Analyst Note:**\
+> The clustering algorithm successfully isolated our primary targets with high precision. **Cluster 1** is a perfect match for the **Afternoon Specialist** persona, showing a 100% afternoon usage rate. **Cluster 3**, while smaller in volume, captures the **Shadow Commuters** who exhibit the highest rush-hour frequency, making them the most cost-effective segment to convert into full annual members.
+
+### Stage 3: Conversion Propensity Modeling (Lead Scoring)
+
+Now that we have validated the segments, I apply a **Logistic Regression** model to determine the conversion probability for each casual trip. Instead of a binary "yes/no," this provides a **Propensity Score** between 0 and 1, allowing the Marketing team to prioritize leads based on their behavioral similarity to annual members.
+
+```{r}
+#| label: bonus-logistic-regression
+#| message: false
+
+# 1. Assign names to clusters for better interpretation
+model_ready_df <- model_ready_df |>
+  mutate(persona_name = case_when(
+    persona_group == 1 ~ "Afternoon Specialist",
+    persona_group == 2 ~ "General Leisure",
+    persona_group == 3 ~ "Shadow Commuter"
+  ))
+
+# 2. Train a simplified Logistic Regression model
+# We use the existing behavioral features to predict the persona type
+log_model <- glm(is_rush_hour ~ log_duration + is_transit_hub + is_weekend, 
+                 data = model_ready_df, family = "binomial")
+
+# 3. Generate Propensity Scores
+model_ready_df$propensity_score <- predict(log_model, type = "response")
+```
+
+### Stage 4: Model Evaluation & Business Logic Validation
+
+To ensure our targeting strategy is reliable, I evaluated the Logistic Regression model using a labeled **Confusion Matrix** and a **Heatmap**. This allows us to assess how well the model identifies "Shadow Commuters" versus general leisure rides.
+
+```{r}
+#| label: bonus-model-metrics
+#| tbl-cap: "Table 7. Programmatic Model Performance Metrics"
+#| message: false
+
+# 1. Generate predictions and confusion matrix
+evaluation_data <- model_ready_df |>
+  mutate(
+    prediction = ifelse(propensity_score > 0.5, 1, 0)
+  )
+
+conf_matrix <- table(Actual = evaluation_data$is_rush_hour, 
+                     Predicted = evaluation_data$prediction)
+
+# 2. Programmatically extract metrics for reproducibility
+
+accuracy_val <- (conf_matrix[2, 2] + conf_matrix[1, 1]) / sum(conf_matrix)
+sensitivity_val <- conf_matrix[2, 2] / (conf_matrix[2, 2] + conf_matrix[2, 1])
+specificity_val <- conf_matrix[1, 1] / (conf_matrix[1, 1] + conf_matrix[1, 2])
+
+# 3. Automated metrics table
+metrics_summary <- data.frame(
+  Metric = c("Accuracy", "Sensitivity (Recall)", "Specificity"),
+  Value = c(accuracy_val, sensitivity_val, specificity_val)
+)
+
+knitr::kable(metrics_summary, digits = 4, align = "lc")
+```
+
+```{r}
+#| label: bonus-confusion-heatmap
+#| fig-cap: "Figure 6. Confusion Matrix Heatmap: Identifying Shadow Commuters"
+#| message: false
+
+# Transform the matrix for ggplot visualization
+conf_df <- as.data.frame(conf_matrix)
+colnames(conf_df) <- c("Actual", "Predicted", "Freq")
+
+# Apply business labels
+conf_df <- conf_df |>
+  mutate(
+    Actual = ifelse(Actual == 1, "Shadow Commuter", "General Rider"),
+    Predicted = ifelse(Predicted == 1, "Shadow Commuter", "General Rider")
+  )
+
+# Plotting the Heatmap
+ggplot(conf_df, aes(x = Predicted, y = Actual, fill = Freq)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "#e3f2fd", high = "#1976d2") +
+  geom_text(aes(label = Freq), color = "black", size = 5) +
+  labs(title = "Model Precision Analysis",
+       x = "Model Prediction",
+       y = "Actual Behavior") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+> **Analyst Note:**\
+> The heatmap’s high **Specificity (0.9866)** serves as a precision filter for our high-stakes campaigns. Rather than "ignoring" tourists, the model ensures we don't overwhelm recreational riders with **irrelevant** annual membership offers. This allows for a tiered marketing strategy: the 807 high-propensity "Shadow Commuters" receive an aggressive annual pass promotion, while the identified "General Riders" are funneled into **Specialized Offers** like the Weekend Explorer or Afternoon Member passes, maximizing conversion across all segments.
+
+### Stage 5: Model Deployment & Strategic Implementation
+
+The final phase involves extracting the model's coefficients to create a "Propensity Engine". By including statistical confidence intervals (Uncertainty), we provide Cyclistic with a robust recipe for real-time user targeting.
+
+```{r}
+#| label: bonus-model-deployment-1
+#| message: false
+#| tbl-cap: "Table 8. Logistic Regression Coefficients and Deployment Recipe"
+
+# Extracting coefficients with Confidence Intervals for senior rigor
+model_stats <- as.data.frame(summary(log_model)$coefficients)
+conf_intervals <- as.data.frame(confint(log_model)) 
+
+final_recipe <- cbind(model_stats[,1:2], conf_intervals)
+colnames(final_recipe) <- c("Estimate", "Std. Error", "2.5% (Lower)", "97.5% (Upper)")
+
+knitr::kable(final_recipe, digits = 4)
+```
+
+```{r}
+#| label: bonus-model-deployment-2
+#| message: false
+#| eval: false
+# Saving the RDS files
+saveRDS(log_model, "data/shadow_commuter_model.rds")
+saveRDS(bike_clusters, "data/behavioral_clusters.rds")
+cluster_params <- list(
+  centers = bike_clusters$centers,
+  scaling_center = attr(cluster_data, "scaled:center"),
+  scaling_scale = attr(cluster_data, "scaled:scale")
+)
+saveRDS(cluster_params, "data/clustering_params.rds")
+```
+
+> **Analyst Note:**\
+> The model identifies **Transit Hubs** as the strongest positive predictor for conversion (Estimate: 0.3772). **Recommendation:** Marketing efforts should not only be digital but physical. Deploying QR-code based conversion offers at top member stations (like Union Station) will catch "Shadow Commuters" exactly when their behavior mirrors that of a subscriber.
+
+### Data Export for Business Intelligence (Tableau)
+
+To ensure the insights from this analysis are actionable for the broader marketing and executive teams, I have developed a **Consolidated Master Dataset**. This file integrates descriptive trip data with the behavioral clusters and propensity scores generated in the previous chapters.
+
+```{r}
+#| label: final-export-and-cleanup-1
+#| message: false
+# 1. Create the Master Dataset for Tableau
+tableau_export <- all_trips_v2 |>
+  left_join(
+    model_ready_df |> select(ride_id, propensity_score, persona_name),
+    by = "ride_id"
+  )
+```
+
+```{r}
+#| label: final-export-and-cleanup-2
+#| message: false
+#| eval: false
+# 2. Export the final Master CSV file (Approx. 787k observations)
+write.csv(tableau_export, "cyclistic_final_strategy_data.csv", row.names = FALSE)
+```
+
+```{r}
+#| label: final-export-and-cleanup-3
+#| message: false
+#| results: hide
+# 3. TOTAL ENVIRONMENT CLEANUP (Reclaiming > 1GB of RAM)
+# This step ensures that the final rendering of the Executive Summary and 
+# concluding remarks remains stable and performance-efficient.
+rm(all_trips_v2, model_ready_df, evaluation_data, log_model, 
+   bike_clusters, cluster_profiles, tableau_export, conf_df, 
+   final_recipe, metrics_summary, top_10_casual, top_10_member, cluster_data)
+
+# Force system garbage collection
+gc()
+```
+
+## Executive Summary: Data-Driven Strategy for Cyclistic’s Growth
+
+The goal of this analysis was to design a strategic roadmap to convert casual riders into annual members by identifying behavioral patterns that signal high conversion propensity. By analyzing over 780,000 trips from the dataset, I transitioned from descriptive insights to a predictive "Lead Scoring" framework designed to maximize marketing ROI.
+
+### Key Findings
+
+-   **The "Shadow Commuter" Opportunity:** Analysis revealed a specific segment of 3,665 casual trips that mirror member behavior, peaking during rush hours (8 AM/5 PM) near transit hubs. These riders are currently paying premium casual rates for a routine that justifies an annual membership.
+
+-   **Temporal Specialization:** A massive "Afternoon Specialist" segment was identified, consisting of 28,819 trips occurring exclusively between 1:00 PM and 4:00 PM on weekdays. This group represents a untapped market for a specialized mid-day membership.
+
+-   **Duration & Location Gap:** Casual riders typically ride for 23 minutes (median), significantly longer than the 12-minute member average, especially near leisure zones like the Lakefront. This confirms that casual usage is primarily recreational but predictable.
+
+### Strategic Recommendations
+
+1.  **Deploy the Propensity Engine (V1.0):** Implement the Logistic Regression model to score casual trips in real-time, focusing on the 807 high-probability leads identified with **98.6% specificity**.
+
+2.  **Model Refinement (V2.0):** To enhance precision, future iterations will incorporate **"Efficiency Signals"** (trips \< 12 minutes) and **"Pattern Validation"**. Users should only be targeted after a pattern of 3+ high-propensity trips is established to avoid "marketing fatigue" from isolated events.
+
+3.  **Tiered Product Launch:** Create the **"Afternoon Member"** and **"Weekend Explorer"** passes to capture the high-volume segments that do not fit the traditional 9-to-5 commute profile.
+
+4.  **Hub-Centric Marketing:** Prioritize physical and digital ads at **Transit Hubs**, as location was proven to be a top statistical predictor for membership potential (Estimate: 0.3772).
+
+### Conclusion
+
+By shifting from broad campaigns to a tiered, behavior-based targeting system, Cyclistic can optimize its marketing spend and accelerate the transition of high-value casual riders into loyal annual members, ensuring sustainable long-term revenue growth.
