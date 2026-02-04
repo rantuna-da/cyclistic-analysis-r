@@ -990,7 +990,7 @@ tableau_export <- all_trips_v2 |>
 #| message: false
 #| eval: false
 # 2. Export the final Master CSV file (Approx. 787k observations)
-write.csv(tableau_export, "cyclistic_final_strategy_data.csv", row.names = FALSE)
+write.csv(tableau_export, "data/cyclistic_final_strategy_data.csv", row.names = FALSE)
 ```
 
 ```{r}
