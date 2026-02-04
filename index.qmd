@@ -61,7 +61,9 @@ The primary objective of this analysis is to identify key differences in how ann
 To guide the marketing strategy, this report focuses on answering:\
 **How do annual members and casual riders use Cyclistic bikes differently?**
 
-## 2. Prepare
+### A Bonus Chapter: Real-Time Membership Offers
+
+## 2. ndefinedPrepare
 
 ### Data Sources
 
@@ -628,7 +630,7 @@ all_trips_v2 |>
   )
 ```
 
-> **Analyst Note:** Members exhibit sharp spikes at **8:00 AM and 5:00 PM** on weekdays. Casual ridership, however,follows a **steady afternoon climb**, peaking between **1:00 PM and 4:00 PM**. They are *afternoon users* who could be targeted with off-peak membership b
+> **Analyst Note:** Members exhibit sharp spikes at **8:00 AM and 5:00 PM** on weekdays. Casual ridership, however,follows a **steady afternoon climb**, peaking between **1:00 PM and 4:00 PM**. They are *afternoon users* who could be targeted with off-peak membership.
 
 ### 5.4 Geographic Distribution (Mapping the Two Worlds)
 
@@ -675,6 +677,7 @@ By plotting the enriched coordinates, we can visualize the "Two Chicagos". Membe
 ```{r}
 #| label: visual-geographic-map-final
 #| message: false
+#| cache: true
 #| fig-cap: "Figure 5. Spatial distribution of trip starts, reconstructing Chicago's geography through usage density."
 # Geographic plot with focus on Chicago coordinates
 all_trips_v2 |>
@@ -697,3 +700,27 @@ all_trips_v2 |>
 :::
 
 > **Analyst Note:** The visual evidence is conclusive. When comparing the data clusters to the functional city map, we find that **Casual riders** are geographically "locked" to leisure corridors like **Navy Pier (Streeter Dr & Grand Ave)** and the **Museum Campus (Shedd Aquarium)**. Conversely, **Members** are concentrated in the city’s "nervous system"—the transit hubs near **Union and Ogilvie Stations (e.g., Canal St & Adams St)** that facilitate the daily professional commute.
+
+## 6. Act (Recommendations)
+
+The following strategic recommendations are designed to convert casual riders into annual members by addressing the specific behavioral and geographic gaps identified in this analysis.
+
+### 6.1 Localized "Leisure Corridor" Campaigns
+
+The geographic analysis reveals that casual riders are heavily concentrated along the lakefront, specifically at landmarks such as **Streeter Dr & Grand Ave (Navy Pier)** and the **Shedd Aquarium**.
+
+-   **Recommendation:** Deploy targeted marketing efforts (digital geo-fencing and physical signage) exclusively at these high-traffic leisure hubs rather than a city-wide campaign. Highlighting the long-term savings for recreational riders in these specific locations will yield higher conversion rates.
+
+### 6.2 The "Weekend Warrior" Membership Tier
+
+Casual ridership share doubles on weekends, with average trip duration's reaching nearly 40 minutes. This suggests that casual users perceive the service as a primary recreational activity rather than a daily tool.
+
+-   **Recommendation:** Introduce a seasonal "Weekend Explorer" membership. By showcasing that the cost of two 40-minute weekend trips is equivalent to a monthly pass, Cyclistic can bridge the gap for users who do not yet require a full annual commute-focused membership.
+
+### 6.3 Off-Peak Afternoon Incentives
+
+Through independent hourly scaling, we discovered that casual riders exhibit a strong, steady climb in activity during the afternoon (1:00 PM – 4:00 PM), peaking while members are at work.
+
+-   **Recommendation:** Implement an "Afternoon Member" discount. Targeting casual riders who consistently use the system during these off-peak hours with a specialized membership rate can increase system efficiency and revenue without contributing to the existing 5:00 PM member rush.
+
+## Bonus Chapter: Predictive Modeling for Conversion — From Casual Insights to Real-Time Membership Offers
