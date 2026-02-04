@@ -104,10 +104,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#column-standardization" id="toc-column-standardization" class="nav-link" data-scroll-target="#column-standardization">3.3 Column Standardization</a></li>
   <li><a href="#data-consistency-type-conversion" id="toc-data-consistency-type-conversion" class="nav-link" data-scroll-target="#data-consistency-type-conversion">3.4 Data Consistency &amp; Type Conversion</a></li>
   <li><a href="#merging-datasets" id="toc-merging-datasets" class="nav-link" data-scroll-target="#merging-datasets">3.5 Merging Datasets</a></li>
+  <li><a href="#adding-time-metrics" id="toc-adding-time-metrics" class="nav-link" data-scroll-target="#adding-time-metrics">3.6 Adding Time Metrics</a></li>
   <li><a href="#data-cleaning-and-validation" id="toc-data-cleaning-and-validation" class="nav-link" data-scroll-target="#data-cleaning-and-validation">3.7 Data Cleaning and Validation</a></li>
   <li><a href="#station-name-standardization" id="toc-station-name-standardization" class="nav-link" data-scroll-target="#station-name-standardization">3.8 Station Name Standardization</a></li>
-  <li><a href="#final-column-selection" id="toc-final-column-selection" class="nav-link" data-scroll-target="#final-column-selection">3.9 Final Column Selection</a></li>
-  <li><a href="#data-health-check-quality-assurance" id="toc-data-health-check-quality-assurance" class="nav-link" data-scroll-target="#data-health-check-quality-assurance">3.10 Data Health Check &amp; Quality Assurance</a></li>
+  <li><a href="#coordinate-enrichment-backfilling" id="toc-coordinate-enrichment-backfilling" class="nav-link" data-scroll-target="#coordinate-enrichment-backfilling">3.9 Coordinate Enrichment (Backfilling)</a></li>
+  <li><a href="#final-data-type-transformation" id="toc-final-data-type-transformation" class="nav-link" data-scroll-target="#final-data-type-transformation">3.10 Final Data Type Transformation</a></li>
+  <li><a href="#final-column-selection" id="toc-final-column-selection" class="nav-link" data-scroll-target="#final-column-selection">3.11 Final Column Selection</a></li>
+  <li><a href="#data-health-check-quality-assurance" id="toc-data-health-check-quality-assurance" class="nav-link" data-scroll-target="#data-health-check-quality-assurance">3.12 Data Health Check &amp; Quality Assurance</a></li>
+  <li><a href="#outlier-treatment-business-logic-validation" id="toc-outlier-treatment-business-logic-validation" class="nav-link" data-scroll-target="#outlier-treatment-business-logic-validation">3.13 Outlier Treatment &amp; Business Logic Validation</a></li>
+  </ul></li>
+  <li><a href="#analyze" id="toc-analyze" class="nav-link" data-scroll-target="#analyze">4. Analyze</a>
+  <ul class="collapse">
+  <li><a href="#general-descriptive-statistics" id="toc-general-descriptive-statistics" class="nav-link" data-scroll-target="#general-descriptive-statistics">4.1 General Descriptive Statistics</a></li>
+  <li><a href="#segmented-analysis-members-vs.-casuals" id="toc-segmented-analysis-members-vs.-casuals" class="nav-link" data-scroll-target="#segmented-analysis-members-vs.-casuals">4.2 Segmented Analysis: Members vs.&nbsp;Casuals</a></li>
+  <li><a href="#weekly-usage-patterns" id="toc-weekly-usage-patterns" class="nav-link" data-scroll-target="#weekly-usage-patterns">4.3 Weekly Usage Patterns</a></li>
+  <li><a href="#hourly-usage-patterns" id="toc-hourly-usage-patterns" class="nav-link" data-scroll-target="#hourly-usage-patterns">4.4 Hourly Usage Patterns</a></li>
+  <li><a href="#geographic-analysis-top-starting-stations-by-user-type" id="toc-geographic-analysis-top-starting-stations-by-user-type" class="nav-link" data-scroll-target="#geographic-analysis-top-starting-stations-by-user-type">4.5 Geographic Analysis: Top Starting Stations by User Type</a></li>
+  </ul></li>
+  <li><a href="#share-visualization" id="toc-share-visualization" class="nav-link" data-scroll-target="#share-visualization">5. Share (Visualization)</a>
+  <ul class="collapse">
+  <li><a href="#average-ride-duration-the-leisure-gap" id="toc-average-ride-duration-the-leisure-gap" class="nav-link" data-scroll-target="#average-ride-duration-the-leisure-gap">5.1 Average Ride Duration (The Leisure Gap)</a></li>
+  <li><a href="#user-distribution-by-day-proportional-analysis" id="toc-user-distribution-by-day-proportional-analysis" class="nav-link" data-scroll-target="#user-distribution-by-day-proportional-analysis">5.2 User Distribution by Day (Proportional Analysis)</a></li>
+  <li><a href="#hourly-distribution-per-day-the-commuter-pulse" id="toc-hourly-distribution-per-day-the-commuter-pulse" class="nav-link" data-scroll-target="#hourly-distribution-per-day-the-commuter-pulse">5.3 Hourly Distribution per Day (The Commuter Pulse)</a></li>
+  <li><a href="#geographic-distribution-mapping-the-two-worlds" id="toc-geographic-distribution-mapping-the-two-worlds" class="nav-link" data-scroll-target="#geographic-distribution-mapping-the-two-worlds">5.4 Geographic Distribution (Mapping the Two Worlds)</a></li>
+  <li><a href="#geographic-cluster-map-the-spatial-divide" id="toc-geographic-cluster-map-the-spatial-divide" class="nav-link" data-scroll-target="#geographic-cluster-map-the-spatial-divide">5.5 Geographic Cluster Map (The Spatial Divide)</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -161,29 +181,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>The first two categories are considered <strong><em>Casual riders</em></strong> (Customers according to the records), while the third category consists of <strong><em>Cyclistic members</em></strong> (Subscribers according to the records).</p>
 <p>In addition to conventional bicycles, Cyclistic provides three inclusive options:</p>
-<div class="quarto-layout-panel" style="text-align: center;" data-layout-ncol="3">
+<div class="quarto-layout-panel" data-layout-ncol="3" style="text-align: center;">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/reclining_bike.png" class="img-fluid figure-img"></p>
-<figcaption>Reclining Bikes</figcaption>
+<p><img src="images/reclining_bike.png" class="img-fluid figure-img" alt="Reclining Bike"></p>
+<figcaption>Image 1. Reclining Bikes</figcaption>
 </figure>
 </div>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/hand_tricycle.png" class="img-fluid figure-img"></p>
-<figcaption>Hand Tricycles</figcaption>
+<p><img src="images/hand_tricycle.png" class="img-fluid figure-img" alt="Hand Tricycle"></p>
+<figcaption>Image 2. Hand Tricycles</figcaption>
 </figure>
 </div>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/cargo_bike.png" class="img-fluid figure-img"></p>
-<figcaption>Cargo Bikes</figcaption>
+<p><img src="images/cargo_bike.png" class="img-fluid figure-img" alt="Cargo Bike"></p>
+<figcaption>Image 3. Cargo Bikes</figcaption>
 </figure>
 </div>
 </div>
@@ -191,10 +211,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>The marketing analyst team, led by Director Lily Moreno, has identified that 92% of users utilize conventional bicycles. Furthermore, 70% of users use the equipment for recreational purposes, while the remaining 30% use it as a means of transportation to work.</p>
 <p>Given that annual memberships yield the highest profits, the marketing team aims to better understand users, their needs, and attraction channels (digital media) to <strong>convert casual riders into Cyclistic members</strong>.</p>
+<div class="quarto-layout-panel" data-layout-ncol="1" style="text-align: center;">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/cyclistic.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Cyclistic logo"></p>
+<p><img src="images/cyclistic.png" class="img-fluid figure-img" alt="Cyclistic logo"></p>
+<figcaption>Image 4. Cyclistic</figcaption>
 </figure>
+</div>
+</div>
+</div>
 </div>
 </section>
 <section id="ask" class="level2">
@@ -256,15 +283,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Import libraries</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytext)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'tidytext' was built under R version 4.5.2</code></pre>
+</div>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import datasets</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>q1_2019 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/Divvy_Trips_2019_Q1.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>q1_2020 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/Divvy_Trips_2020_Q1.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import datasets</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>q1_2019 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/Divvy_Trips_2019_Q1.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>q1_2020 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/Divvy_Trips_2020_Q1.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -274,8 +306,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect the structure of both datasets</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(q1_2019)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect the structure of both datasets</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(q1_2019)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 365,069
@@ -295,7 +327,7 @@ $ birthyear         &lt;dbl&gt; 1989, 1990, 1994, 1993, 1994, 1983, 1984, 1990, 
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(q1_2020)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(q1_2020)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 426,887
@@ -322,16 +354,16 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>q1_2019 <span class="ot">&lt;-</span> q1_2019 <span class="sc">|&gt;</span>  </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">ride_id =</span> trip_id,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">rideable_type =</span> bikeid,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">started_at =</span> start_time,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">ended_at =</span> end_time,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">start_station_name =</span> from_station_name,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">start_station_id =</span> from_station_id,</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">end_station_name =</span> to_station_name,</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">end_station_id =</span> to_station_id,</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">member_casual =</span> usertype)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>q1_2019 <span class="ot">&lt;-</span> q1_2019 <span class="sc">|&gt;</span>  </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">ride_id =</span> trip_id,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">rideable_type =</span> bikeid,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">started_at =</span> start_time,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">ended_at =</span> end_time,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">start_station_name =</span> from_station_name,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">start_station_id =</span> from_station_id,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">end_station_name =</span> to_station_name,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">end_station_id =</span> to_station_id,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">member_casual =</span> usertype)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -342,21 +374,21 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert IDs to character for compatibility</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>q1_2019 <span class="ot">&lt;-</span> q1_2019 <span class="sc">|&gt;</span>  </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ride_id =</span> <span class="fu">as.character</span>(ride_id),</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">rideable_type =</span> <span class="fu">as.character</span>(rideable_type)) </span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Consolidate user labels in both datasets</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>q1_2019 <span class="ot">&lt;-</span> q1_2019 <span class="sc">|&gt;</span> </span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">member_casual =</span> <span class="fu">recode</span>(member_casual,</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"Subscriber"</span> <span class="ot">=</span> <span class="st">"member"</span>,</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"Customer"</span> <span class="ot">=</span> <span class="st">"casual"</span>))</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>q1_2020 <span class="ot">&lt;-</span> q1_2020 <span class="sc">|&gt;</span> </span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">member_casual =</span> <span class="fu">recode</span>(member_casual,</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"Subscriber"</span> <span class="ot">=</span> <span class="st">"member"</span>,</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"Customer"</span> <span class="ot">=</span> <span class="st">"casual"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert IDs to character for compatibility</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>q1_2019 <span class="ot">&lt;-</span> q1_2019 <span class="sc">|&gt;</span>  </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ride_id =</span> <span class="fu">as.character</span>(ride_id),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">rideable_type =</span> <span class="fu">as.character</span>(rideable_type)) </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Consolidate user labels in both datasets</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>q1_2019 <span class="ot">&lt;-</span> q1_2019 <span class="sc">|&gt;</span> </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">member_casual =</span> <span class="fu">recode</span>(member_casual,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"Subscriber"</span> <span class="ot">=</span> <span class="st">"member"</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"Customer"</span> <span class="ot">=</span> <span class="st">"casual"</span>))</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>q1_2020 <span class="ot">&lt;-</span> q1_2020 <span class="sc">|&gt;</span> </span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">member_casual =</span> <span class="fu">recode</span>(member_casual,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"Subscriber"</span> <span class="ot">=</span> <span class="st">"member"</span>,</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"Customer"</span> <span class="ot">=</span> <span class="st">"casual"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -366,38 +398,39 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Stack the data frames</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>all_trips <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(q1_2019, q1_2020)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove separate data frames to save RAM</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(q1_2019, q1_2020)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Stack the data frames</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>all_trips <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(q1_2019, q1_2020)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove separate data frames to save RAM</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(q1_2019, q1_2020)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<section id="adding-time-metrics" class="level4">
-<h4 class="anchored" data-anchor-id="adding-time-metrics">3.6 Adding Time Metrics</h4>
+</section>
+<section id="adding-time-metrics" class="level3">
+<h3 class="anchored" data-anchor-id="adding-time-metrics">3.6 Adding Time Metrics</h3>
 <p>To answer how users utilize the service differently, I will extract the date, month, and day of the week from the <code>started_at</code> column. Additionally, I will calculate the <code>ride_length</code> in minutes.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensure date labels are in English for consistency</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setlocale</span>(<span class="st">"LC_TIME"</span>, <span class="st">"English"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensure date labels are set to English for consistency</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setlocale</span>(<span class="st">"LC_TIME"</span>, <span class="st">"English"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "English_United States.1252"</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract date components and calculate duration</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>all_trips <span class="ot">&lt;-</span> all_trips <span class="sc">|&gt;</span> </span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">as.Date</span>(started_at),</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">month =</span> <span class="fu">format</span>(<span class="fu">as.Date</span>(date), <span class="st">"%m"</span>),</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">day =</span> <span class="fu">format</span>(<span class="fu">as.Date</span>(date), <span class="st">"%d"</span>),</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> <span class="fu">format</span>(<span class="fu">as.Date</span>(date), <span class="st">"%Y"</span>),</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">day_of_week =</span> <span class="fu">format</span>(<span class="fu">as.Date</span>(date), <span class="st">"%A"</span>),</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">ride_length =</span> <span class="fu">as.numeric</span>(<span class="fu">difftime</span>(ended_at, started_at, <span class="at">units =</span> <span class="st">"mins"</span>)))</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick check of the new columns</span></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(all_trips <span class="sc">|&gt;</span> <span class="fu">select</span>(started_at, ended_at, ride_length, day_of_week))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract date components and calculate duration</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>all_trips <span class="ot">&lt;-</span> all_trips <span class="sc">|&gt;</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">as.Date</span>(started_at),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">month =</span> <span class="fu">format</span>(<span class="fu">as.Date</span>(date), <span class="st">"%m"</span>),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">day =</span> <span class="fu">format</span>(<span class="fu">as.Date</span>(date), <span class="st">"%d"</span>),</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> <span class="fu">format</span>(<span class="fu">as.Date</span>(date), <span class="st">"%Y"</span>),</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">day_of_week =</span> <span class="fu">format</span>(<span class="fu">as.Date</span>(date), <span class="st">"%A"</span>),</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">ride_length =</span> <span class="fu">as.numeric</span>(<span class="fu">difftime</span>(ended_at, started_at, <span class="at">units =</span> <span class="st">"mins"</span>)))</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick check of the new columns</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(all_trips <span class="sc">|&gt;</span> <span class="fu">select</span>(started_at, ended_at, ride_length, day_of_week))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 4
@@ -412,33 +445,24 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 </div>
 </div>
 </section>
-</section>
 <section id="data-cleaning-and-validation" class="level3">
 <h3 class="anchored" data-anchor-id="data-cleaning-and-validation">3.7 Data Cleaning and Validation</h3>
 <p>The final step in the process phase is to remove data that could skew the results. This includes trips with a duration of zero or less, and entries associated with administrative stations (such as “HQ QR”) that do not represent actual customer trips.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter out invalid durations and administrative station entries</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="ot">&lt;-</span> all_trips <span class="sc">|&gt;</span> </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(start_station_name <span class="sc">!=</span> <span class="st">"HQ QR"</span> <span class="sc">|</span> <span class="fu">is.na</span>(start_station_name)) <span class="sc">|&gt;</span> </span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ride_length <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify the final dimensions of the clean dataset</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(all_trips_v2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 788189     22</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># station_names validation</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="sc">|&gt;</span> </span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(start_station_id) <span class="sc">|&gt;</span> </span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">n_distinct</span>(start_station_name) <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">names =</span> <span class="fu">list</span>(<span class="fu">unique</span>(start_station_name))) <span class="sc">|&gt;</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="at">cols =</span> names)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter out invalid durations and administrative station entries</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>all_trips <span class="ot">&lt;-</span> all_trips <span class="sc">|&gt;</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(start_station_name <span class="sc">!=</span> <span class="st">"HQ QR"</span> <span class="sc">|</span> <span class="fu">is.na</span>(start_station_name)) <span class="sc">|&gt;</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ride_length <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># station_names validation</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>all_trips <span class="sc">|&gt;</span> </span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(start_station_id) <span class="sc">|&gt;</span> </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">n_distinct</span>(start_station_name) <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">names =</span> <span class="fu">list</span>(<span class="fu">unique</span>(start_station_name))) <span class="sc">|&gt;</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="at">cols =</span> names)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 48 × 2
@@ -464,33 +488,33 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Remove temporary and special character tags</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="ot">&lt;-</span> all_trips_v2 <span class="sc">|&gt;</span> </span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(start_station_name, end_station_name), </span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                <span class="sc">~</span> <span class="fu">str_remove_all</span>(., <span class="st">" </span><span class="sc">\\</span><span class="st">(Temp</span><span class="sc">\\</span><span class="st">)| </span><span class="sc">\\</span><span class="st">(</span><span class="sc">\\</span><span class="st">*</span><span class="sc">\\</span><span class="st">)"</span>)))</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Consolidate specific ID-name mismatches based on geographic verification</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="ot">&lt;-</span> all_trips_v2 <span class="sc">|&gt;</span> </span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">start_station_name =</span> <span class="fu">case_when</span>(</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    start_station_id <span class="sc">==</span> <span class="dv">19</span>  <span class="sc">~</span> <span class="st">"Loomis St &amp; Taylor St"</span>,</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    start_station_id <span class="sc">==</span> <span class="dv">208</span> <span class="sc">~</span> <span class="st">"Ashland Ave &amp; 21st St"</span>,</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    start_station_id <span class="sc">==</span> <span class="dv">217</span> <span class="sc">~</span> <span class="st">"Racine Ave &amp; Fulton St"</span>,</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    start_station_id <span class="sc">==</span> <span class="dv">286</span> <span class="sc">~</span> <span class="st">"Franklin St &amp; Quincy St"</span>,</span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> start_station_name</span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_station_name =</span> <span class="fu">case_when</span>(</span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    end_station_id <span class="sc">==</span> <span class="dv">19</span>  <span class="sc">~</span> <span class="st">"Loomis St &amp; Taylor St"</span>,</span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    end_station_id <span class="sc">==</span> <span class="dv">208</span> <span class="sc">~</span> <span class="st">"Ashland Ave &amp; 21st St"</span>,</span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    end_station_id <span class="sc">==</span> <span class="dv">217</span> <span class="sc">~</span> <span class="st">"Racine Ave &amp; Fulton St"</span>,</span>
-<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    end_station_id <span class="sc">==</span> <span class="dv">286</span> <span class="sc">~</span> <span class="st">"Franklin St &amp; Quincy St"</span>,</span>
-<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> end_station_name</span>
-<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>  ))</span>
-<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Final Verification: Checking if any station still has more than one name</span></span>
-<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="sc">|&gt;</span> </span>
-<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(start_station_id) <span class="sc">|&gt;</span> </span>
-<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">unique_names =</span> <span class="fu">n_distinct</span>(start_station_name)) <span class="sc">|&gt;</span> </span>
-<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(unique_names <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Remove temporary and special character tags</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="ot">&lt;-</span> all_trips <span class="sc">|&gt;</span> </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(start_station_name, end_station_name), </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                <span class="sc">~</span> <span class="fu">str_remove_all</span>(., <span class="st">" </span><span class="sc">\\</span><span class="st">(Temp</span><span class="sc">\\</span><span class="st">)| </span><span class="sc">\\</span><span class="st">(</span><span class="sc">\\</span><span class="st">*</span><span class="sc">\\</span><span class="st">)"</span>)))</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Consolidate specific ID-name mismatches based on geographic verification</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="ot">&lt;-</span> all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">start_station_name =</span> <span class="fu">case_when</span>(</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    start_station_id <span class="sc">==</span> <span class="dv">19</span>  <span class="sc">~</span> <span class="st">"Loomis St &amp; Taylor St"</span>,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    start_station_id <span class="sc">==</span> <span class="dv">208</span> <span class="sc">~</span> <span class="st">"Ashland Ave &amp; 21st St"</span>,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    start_station_id <span class="sc">==</span> <span class="dv">217</span> <span class="sc">~</span> <span class="st">"Racine Ave &amp; Fulton St"</span>,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    start_station_id <span class="sc">==</span> <span class="dv">286</span> <span class="sc">~</span> <span class="st">"Franklin St &amp; Quincy St"</span>,</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> start_station_name</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_station_name =</span> <span class="fu">case_when</span>(</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    end_station_id <span class="sc">==</span> <span class="dv">19</span>  <span class="sc">~</span> <span class="st">"Loomis St &amp; Taylor St"</span>,</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    end_station_id <span class="sc">==</span> <span class="dv">208</span> <span class="sc">~</span> <span class="st">"Ashland Ave &amp; 21st St"</span>,</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    end_station_id <span class="sc">==</span> <span class="dv">217</span> <span class="sc">~</span> <span class="st">"Racine Ave &amp; Fulton St"</span>,</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    end_station_id <span class="sc">==</span> <span class="dv">286</span> <span class="sc">~</span> <span class="st">"Franklin St &amp; Quincy St"</span>,</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> end_station_name</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Final Verification: Checking if any station still has more than one name</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(start_station_id) <span class="sc">|&gt;</span> </span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">unique_names =</span> <span class="fu">n_distinct</span>(start_station_name)) <span class="sc">|&gt;</span> </span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(unique_names <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 0 × 2
@@ -498,28 +522,116 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 </div>
 </div>
 </section>
+<section id="coordinate-enrichment-backfilling" class="level3">
+<h3 class="anchored" data-anchor-id="coordinate-enrichment-backfilling">3.9 Coordinate Enrichment (Backfilling)</h3>
+<p>Since the 2019 dataset lacks geographic coordinates, I will use the <code>station_id</code> to map the latitude and longitude from the 2020 records to the 2019 ones. This ensures a consistent geographic analysis across the entire timeframe.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: coordinate-mapping-full</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Create a reference table for all unique station coordinates</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>station_map <span class="ot">&lt;-</span> all_trips_v2 <span class="sc">|&gt;</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(start_lat)) <span class="sc">|&gt;</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(start_station_id) <span class="sc">|&gt;</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">ref_lat =</span> <span class="fu">mean</span>(start_lat, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">ref_lng =</span> <span class="fu">mean</span>(start_lng, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">'drop'</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Enrich both Start and End coordinates in a single flow</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="ot">&lt;-</span> all_trips_v2 <span class="sc">|&gt;</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Enrich Start Stations</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(station_map, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"start_station_id"</span> <span class="ot">=</span> <span class="st">"start_station_id"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">start_lat =</span> <span class="fu">coalesce</span>(start_lat, ref_lat),</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">start_lng =</span> <span class="fu">coalesce</span>(start_lng, ref_lng)</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(ref_lat, ref_lng)) <span class="sc">|&gt;</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Enrich End Stations</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(station_map, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"end_station_id"</span> <span class="ot">=</span> <span class="st">"start_station_id"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_lat =</span> <span class="fu">coalesce</span>(end_lat, ref_lat),</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_lng =</span> <span class="fu">coalesce</span>(end_lng, ref_lng)</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(ref_lat, ref_lng))</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove the intermediate dataset to free up memory for analysis</span></span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(station_map)</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Final Data Quality Verification</span></span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>summary_geo <span class="ot">&lt;-</span> all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">missing_start =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(start_lat)),</span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">missing_end =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(end_lat))</span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(summary_geo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  missing_start missing_end
+          &lt;int&gt;       &lt;int&gt;
+1            40          56</code></pre>
+</div>
+</div>
+<p>By applying this to both start and end stations, I successfully reduced the missing geographic data from 46% to less than <strong>0.01%</strong> of the total records.</p>
+</section>
+<section id="final-data-type-transformation" class="level3">
+<h3 class="anchored" data-anchor-id="final-data-type-transformation">3.10 Final Data Type Transformation</h3>
+<p>To ensure analytical accuracy, I am converting categorical variables—such as station IDs, months, and days—into factors. This step is crucial for maintaining the correct chronological order in visualizations and ensuring that identification numbers are not treated as mathematical values.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set locale to English again just to be safe before factoring</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setlocale</span>(<span class="st">"LC_TIME"</span>, <span class="st">"English"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "English_United States.1252"</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="ot">&lt;-</span> all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># IDs as characters (since they are identifications, not numbers)</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">start_station_id =</span> <span class="fu">as.character</span>(start_station_id),</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_station_id =</span> <span class="fu">as.character</span>(end_station_id),</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Temporal variables as ordered factors</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">month =</span> <span class="fu">factor</span>(month, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"01"</span>, <span class="st">"02"</span>, <span class="st">"03"</span>), <span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">day_of_week =</span> <span class="fu">factor</span>(day_of_week, </span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>                         <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Monday"</span>, <span class="st">"Tuesday"</span>, <span class="st">"Wednesday"</span>, <span class="st">"Thursday"</span>, </span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"Friday"</span>, <span class="st">"Saturday"</span>, <span class="st">"Sunday"</span>), </span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Year and User Type as factors</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">year =</span> <span class="fu">factor</span>(year),</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">member_casual =</span> <span class="fu">factor</span>(member_casual)</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
 <section id="final-column-selection" class="level3">
-<h3 class="anchored" data-anchor-id="final-column-selection">3.9 Final Column Selection</h3>
+<h3 class="anchored" data-anchor-id="final-column-selection">3.11 Final Column Selection</h3>
 <p>To ensure a consistent analysis between 2019 and 2020, I have opted to remove the <code>gender</code> and <code>birthyear</code> columns. These variables were not collected in the 2020 dataset, and including them would result in an incomplete demographic profile. Additionally, the <code>tripduration</code> column from 2019 was removed in favor of the newly calculated <code>ride_length</code> variable to ensure a uniform measurement unit (minutes) across all records.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove inconsistent or redundant columns</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="ot">&lt;-</span> all_trips_v2 <span class="sc">|&gt;</span> </span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(gender, birthyear, tripduration))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove inconsistent or redundant columns</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="ot">&lt;-</span> all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(gender, birthyear, tripduration))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
 <section id="data-health-check-quality-assurance" class="level3">
-<h3 class="anchored" data-anchor-id="data-health-check-quality-assurance">3.10 Data Health Check &amp; Quality Assurance</h3>
+<h3 class="anchored" data-anchor-id="data-health-check-quality-assurance">3.12 Data Health Check &amp; Quality Assurance</h3>
 <p>As a final step before analysis, I conducted a quality check using the <code>skimr</code> library to ensure there are no missing values in critical columns and to examine the distribution of <code>ride_length</code>.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary of the clean dataset</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(all_trips_v2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary of the clean dataset</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(all_trips_v2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
@@ -547,25 +659,29 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 </tr>
 <tr class="even">
 <td style="text-align: left;">character</td>
-<td style="text-align: left;">9</td>
+<td style="text-align: left;">7</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Date</td>
 <td style="text-align: left;">1</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">numeric</td>
-<td style="text-align: left;">7</td>
+<td style="text-align: left;">factor</td>
+<td style="text-align: left;">4</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">5</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">POSIXct</td>
 <td style="text-align: left;">2</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">________________________</td>
 <td style="text-align: left;"></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Group variables</td>
 <td style="text-align: left;">None</td>
 </tr>
@@ -617,6 +733,16 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">start_station_id</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">611</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">start_station_name</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
@@ -624,6 +750,16 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 <td style="text-align: right;">42</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">611</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">end_station_id</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">612</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
@@ -637,26 +773,6 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">member_casual</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">month</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;">day</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
@@ -664,26 +780,6 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">31</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">year</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">day_of_week</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">9</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">7</td>
 <td style="text-align: right;">0</td>
 </tr>
 </tbody>
@@ -722,10 +818,65 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 </tr>
 </tbody>
 </table>
+<p><strong>Variable type: factor</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 7%">
+<col style="width: 8%">
+<col style="width: 48%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: left;">ordered</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: left;">top_counts</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">member_casual</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">mem: 720312, cas: 67877</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">month</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">03: 305819, 01: 247156, 02: 235214</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">year</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">202: 423120, 201: 365069</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">day_of_week</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: left;">Tue: 135285, Thu: 132375, Wed: 129592, Fri: 123181</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Variable type: numeric</strong></p>
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 17%">
+<col style="width: 14%">
 <col style="width: 10%">
 <col style="width: 14%">
 <col style="width: 7%">
@@ -754,48 +905,22 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">start_station_id</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1.00</td>
-<td style="text-align: right;">202.15</td>
-<td style="text-align: right;">155.92</td>
-<td style="text-align: right;">2.00</td>
-<td style="text-align: right;">77.00</td>
-<td style="text-align: right;">174.00</td>
-<td style="text-align: right;">289.00</td>
-<td style="text-align: right;">673.00</td>
-<td style="text-align: left;">▇▅▃▁▁</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">end_station_id</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1.00</td>
-<td style="text-align: right;">202.13</td>
-<td style="text-align: right;">156.34</td>
-<td style="text-align: right;">2.00</td>
-<td style="text-align: right;">77.00</td>
-<td style="text-align: right;">173.00</td>
-<td style="text-align: right;">289.00</td>
-<td style="text-align: right;">675.00</td>
-<td style="text-align: left;">▇▅▃▁▁</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;">start_lat</td>
-<td style="text-align: right;">365069</td>
-<td style="text-align: right;">0.54</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">41.90</td>
 <td style="text-align: right;">0.04</td>
 <td style="text-align: right;">41.74</td>
 <td style="text-align: right;">41.88</td>
 <td style="text-align: right;">41.89</td>
-<td style="text-align: right;">41.92</td>
+<td style="text-align: right;">41.91</td>
 <td style="text-align: right;">42.06</td>
 <td style="text-align: left;">▁▁▇▂▁</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">start_lng</td>
-<td style="text-align: right;">365069</td>
-<td style="text-align: right;">0.54</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">-87.64</td>
 <td style="text-align: right;">0.02</td>
 <td style="text-align: right;">-87.77</td>
@@ -807,8 +932,8 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 </tr>
 <tr class="odd">
 <td style="text-align: left;">end_lat</td>
-<td style="text-align: right;">365069</td>
-<td style="text-align: right;">0.54</td>
+<td style="text-align: right;">56</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">41.90</td>
 <td style="text-align: right;">0.04</td>
 <td style="text-align: right;">41.74</td>
@@ -820,8 +945,8 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 </tr>
 <tr class="even">
 <td style="text-align: left;">end_lng</td>
-<td style="text-align: right;">365069</td>
-<td style="text-align: right;">0.54</td>
+<td style="text-align: right;">56</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">-87.64</td>
 <td style="text-align: right;">0.02</td>
 <td style="text-align: right;">-87.77</td>
@@ -834,7 +959,7 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 <tr class="odd">
 <td style="text-align: left;">ride_length</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">19.82</td>
 <td style="text-align: right;">554.87</td>
 <td style="text-align: right;">0.02</td>
@@ -890,24 +1015,802 @@ $ member_casual      &lt;chr&gt; "member", "member", "member", "member", "member
 </tbody>
 </table>
 </div>
+</div>
+<blockquote class="blockquote">
+<p><strong>Analyst Note:</strong> The <code>skim</code> output confirms a clean dataset with <strong>788,189 observations</strong>. While coordinates (<code>lat</code>/<code>lng</code>) show some missing values (46%), this does not impact the primary business question regarding usage patterns by membership type.</p>
+</blockquote>
+<p><strong>Critical Data Note:</strong> The <code>skim</code> analysis reveals significant outliers in <code>ride_length</code>. While the median trip is only <strong>8.98 minutes</strong>, the maximum value reaches an unrealistic <strong>177,200.37 minutes</strong> (approx. 123 days). These outliers skew the distribution, as seen in the “flat” histogram. For the subsequent analysis, I will consider these anomalies to ensure the average metrics represent true user behavior.</p>
+</section>
+<section id="outlier-treatment-business-logic-validation" class="level3">
+<h3 class="anchored" data-anchor-id="outlier-treatment-business-logic-validation">3.13 Outlier Treatment &amp; Business Logic Validation</h3>
+<p>A critical anomaly was detected during the quality check: several trips recorded durations exceeding <strong>100 days</strong>. Based on <strong>industry standards</strong> for urban bike-sharing systems and Cyclistic’s business model—focused on short-term city transit—trips lasting more than <strong>24 hours (1,440 minutes)</strong> are considered technical errors, thefts, or system failures rather than intentional rentals.</p>
+<p>To ensure that descriptive statistics (like the average) reflect true user behavior, I have capped the dataset at 24 hours.</p>
+<blockquote class="blockquote">
+<p><strong>Note for the Operations Team:</strong> This 24-hour threshold is a data-driven recommendation. I suggest the Cyclistic technical team validates these specific records to confirm if they represent unreturned bikes or docking station malfunctions.</p>
+</blockquote>
+<div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify there are no NA values in key analytical columns</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="sc">|&gt;</span> </span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">na_ride_id =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(ride_id)),</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">na_member_casual =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(member_casual)),</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">na_ride_length =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(ride_length))</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filtering trips to a maximum of 24 hours (1,440 minutes)</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="ot">&lt;-</span> all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ride_length <span class="sc">&lt;=</span> <span class="dv">1440</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove the intermediate dataset to free up memory for analysis</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(all_trips)</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify the final dimensions of the clean dataset</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Final dimensions of the clean dataset:"</span>, <span class="fu">paste</span>(<span class="fu">dim</span>(all_trips_v2), <span class="at">collapse =</span> <span class="st">" x "</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 3
-  na_ride_id na_member_casual na_ride_length
-       &lt;int&gt;            &lt;int&gt;          &lt;int&gt;
-1          0                0              0</code></pre>
+<pre><code>[1] "Final dimensions of the clean dataset: 787707 x 19"</code></pre>
 </div>
 </div>
-<p><strong>Analyst Note:</strong> The <code>skim</code> output confirms a clean dataset with <strong>788,189 observations</strong>. While coordinates (<code>lat</code>/<code>lng</code>) show some missing values (46%), this does not impact the primary business question regarding usage patterns by membership type.</p>
+</section>
+</section>
+<section id="analyze" class="level2">
+<h2 class="anchored" data-anchor-id="analyze">4. Analyze</h2>
+<p>With a clean and consolidated dataset of <strong>787,707 records</strong>, I will now perform a descriptive analysis to uncover trends and patterns. The focus is on identifying how usage differs between members and casual riders.</p>
+<section id="general-descriptive-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="general-descriptive-statistics">4.1 General Descriptive Statistics</h3>
+<p>First, I will establish a baseline for the <code>ride_length</code> variable. As noted in the previous phase, the distribution is skewed, so comparing the mean and median is essential.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary statistics for ride_length (in minutes)</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">number_of_rides =</span> <span class="fu">n</span>(),</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_ride_length =</span> <span class="fu">mean</span>(ride_length),</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_ride_length =</span> <span class="fu">median</span>(ride_length),</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_ride_length =</span> <span class="fu">max</span>(ride_length),</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_ride_length =</span> <span class="fu">min</span>(ride_length)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Number of rides"</span>, <span class="st">"Mean"</span>, <span class="st">"Median"</span>, <span class="st">"Max"</span>, <span class="st">"Min"</span>),</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">align =</span> <span class="st">"ccccc"</span>,</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Table 1. Ride Duration Summary Statistics"</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Table 1. Ride Duration Summary Statistics</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Number of rides</th>
+<th style="text-align: center;">Mean</th>
+<th style="text-align: center;">Median</th>
+<th style="text-align: center;">Max</th>
+<th style="text-align: center;">Min</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">787707</td>
+<td style="text-align: center;">13.72</td>
+<td style="text-align: center;">8.98</td>
+<td style="text-align: center;">1435.92</td>
+<td style="text-align: center;">0.02</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The baseline analysis of <code>ride_length</code> reveals that the average trip duration is <strong>13.72 minutes</strong>, while the median is <strong>8.98 minutes</strong>. The significant gap between the mean and median confirms that, even after removing extreme outliers (trips &gt; 24 hours), the distribution remains skewed by longer occasional rides.</p>
+</section>
+<section id="segmented-analysis-members-vs.-casuals" class="level3">
+<h3 class="anchored" data-anchor-id="segmented-analysis-members-vs.-casuals">4.2 Segmented Analysis: Members vs.&nbsp;Casuals</h3>
+<p>The core of our task is the comparison between user types. Initial data shows a clear dominance of members in total volume (720,125 members vs.&nbsp;67,582 casuals). Now, let’s see how their trip durations compare.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparing mean and median duration by user type</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(member_casual) <span class="sc">|&gt;</span> </span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">number_of_rides =</span> <span class="fu">n</span>(),</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_ride_length =</span> <span class="fu">mean</span>(ride_length),</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_ride_length =</span> <span class="fu">median</span>(ride_length),</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_ride_length =</span> <span class="fu">max</span>(ride_length),</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_ride_length =</span> <span class="fu">min</span>(ride_length)</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"User Type"</span>, <span class="st">"Number of rides"</span>, <span class="st">"Mean"</span>, <span class="st">"Median"</span>, <span class="st">"Max"</span>, <span class="st">"Min"</span>),</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">align =</span> <span class="st">"cccccc"</span>,</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Table 2. Mean and Median Ride Duration by User Type"</span></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Table 2. Mean and Median Ride Duration by User Type</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;">User Type</th>
+<th style="text-align: center;">Number of rides</th>
+<th style="text-align: center;">Mean</th>
+<th style="text-align: center;">Median</th>
+<th style="text-align: center;">Max</th>
+<th style="text-align: center;">Min</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">casual</td>
+<td style="text-align: center;">67582</td>
+<td style="text-align: center;">38.38</td>
+<td style="text-align: center;">23.13</td>
+<td style="text-align: center;">1435.92</td>
+<td style="text-align: center;">0.03</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">member</td>
+<td style="text-align: center;">720125</td>
+<td style="text-align: center;">11.41</td>
+<td style="text-align: center;">8.47</td>
+<td style="text-align: center;">1433.07</td>
+<td style="text-align: center;">0.02</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>When segmenting by user type, we find a stark contrast in behavior. While annual members account for the vast majority of trips (<strong>720,125 rides</strong>), casual riders utilize the equipment for significantly longer periods.</p>
+<p><strong>Key Business Insight:</strong> Casual riders’ median trip duration (<strong>23.13 min</strong>) is nearly <strong>three times longer</strong> than that of members (<strong>8.47 min</strong>). This data <strong>provides statistical evidence to support the Marketing Team’s observation</strong> that Members use Cyclistic as a highly efficient “A-to-B” commuting tool, while Casuals view the service as a platform for leisure or sightseeing.</p>
+</section>
+<section id="weekly-usage-patterns" class="level3">
+<h3 class="anchored" data-anchor-id="weekly-usage-patterns">4.3 Weekly Usage Patterns</h3>
+<p>To understand when these users are most active, I analyzed the number of rides and average duration for each day of the week. This analysis is crucial for identifying routine-based versus leisure-based behaviors.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary of rides and average duration by day of week</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(member_casual, day_of_week) <span class="sc">|&gt;</span> </span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">number_of_rides =</span> <span class="fu">n</span>(),</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">average_ride_length =</span> <span class="fu">mean</span>(ride_length),</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">'drop'</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"User Type"</span>, <span class="st">"Day of Week"</span>, <span class="st">"Number of Rides"</span>, <span class="st">"Avg Duration (min)"</span>),</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">align =</span> <span class="st">"llcc"</span>,</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Table 3. Weekly Usage Patterns: Volume and Duration"</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Table 3. Weekly Usage Patterns: Volume and Duration</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">User Type</th>
+<th style="text-align: left;">Day of Week</th>
+<th style="text-align: center;">Number of Rides</th>
+<th style="text-align: center;">Avg Duration (min)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">casual</td>
+<td style="text-align: left;">Monday</td>
+<td style="text-align: center;">5569</td>
+<td style="text-align: center;">34.43</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">casual</td>
+<td style="text-align: left;">Tuesday</td>
+<td style="text-align: center;">7288</td>
+<td style="text-align: center;">35.56</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">casual</td>
+<td style="text-align: left;">Wednesday</td>
+<td style="text-align: center;">7655</td>
+<td style="text-align: center;">41.12</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">casual</td>
+<td style="text-align: left;">Thursday</td>
+<td style="text-align: center;">7105</td>
+<td style="text-align: center;">35.27</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">casual</td>
+<td style="text-align: left;">Friday</td>
+<td style="text-align: center;">7971</td>
+<td style="text-align: center;">37.12</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">casual</td>
+<td style="text-align: left;">Saturday</td>
+<td style="text-align: center;">13416</td>
+<td style="text-align: center;">38.95</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">casual</td>
+<td style="text-align: left;">Sunday</td>
+<td style="text-align: center;">18578</td>
+<td style="text-align: center;">40.86</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">member</td>
+<td style="text-align: left;">Monday</td>
+<td style="text-align: center;">110412</td>
+<td style="text-align: center;">11.10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">member</td>
+<td style="text-align: left;">Tuesday</td>
+<td style="text-align: center;">127946</td>
+<td style="text-align: center;">11.32</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">member</td>
+<td style="text-align: left;">Wednesday</td>
+<td style="text-align: center;">121878</td>
+<td style="text-align: center;">11.17</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">member</td>
+<td style="text-align: left;">Thursday</td>
+<td style="text-align: center;">125198</td>
+<td style="text-align: center;">11.07</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">member</td>
+<td style="text-align: left;">Friday</td>
+<td style="text-align: center;">115132</td>
+<td style="text-align: center;">11.10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">member</td>
+<td style="text-align: left;">Saturday</td>
+<td style="text-align: center;">59381</td>
+<td style="text-align: center;">12.44</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">member</td>
+<td style="text-align: left;">Sunday</td>
+<td style="text-align: center;">60178</td>
+<td style="text-align: center;">12.92</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Key Findings:</strong></p>
+<ul>
+<li><p><strong>Members (The Commuters):</strong> Their highest volume of rides occurs during the workweek (Monday through Friday), with a noticeable decline on Saturdays and Sundays. Their average duration remains remarkably consistent throughout the week, reinforcing the idea of routine, time-sensitive trips.</p></li>
+<li><p><strong>Casual Riders (The Leisure Seekers):</strong> While their total volume is lower than that of members, their activity peaks during the weekend. Furthermore, their average ride duration increases significantly on Saturdays and Sundays, suggesting that their use of Cyclistic is primarily tied to recreational or non-routine activities.</p></li>
+</ul>
+</section>
+<section id="hourly-usage-patterns" class="level3">
+<h3 class="anchored" data-anchor-id="hourly-usage-patterns">4.4 Hourly Usage Patterns</h3>
+<p>To further differentiate user behavior, I analyzed the distribution of rides by the hour of the day. This provides insight into whether the bikes are being used for scheduled activities (like commuting) or flexible ones (like tourism).</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract the hour from the starting timestamp</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="ot">&lt;-</span> all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hour =</span> <span class="fu">hour</span>(started_at))</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarize the number of rides per hour and user type</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(member_casual, hour) <span class="sc">|&gt;</span> </span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">number_of_rides =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">'drop'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> member_casual, <span class="at">values_from =</span> number_of_rides) <span class="sc">|&gt;</span> </span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Hour of Day"</span>, <span class="st">"Casual Rides"</span>, <span class="st">"Member Rides"</span>),</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">align =</span> <span class="st">"ccc"</span>,</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Table 4. Hourly Distribution of Rides by User Type"</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Table 4. Hourly Distribution of Rides by User Type</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Hour of Day</th>
+<th style="text-align: center;">Casual Rides</th>
+<th style="text-align: center;">Member Rides</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">460</td>
+<td style="text-align: center;">2956</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">328</td>
+<td style="text-align: center;">1740</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">240</td>
+<td style="text-align: center;">1129</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">143</td>
+<td style="text-align: center;">896</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">91</td>
+<td style="text-align: center;">1984</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">194</td>
+<td style="text-align: center;">9040</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">482</td>
+<td style="text-align: center;">27697</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">1010</td>
+<td style="text-align: center;">58611</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">1828</td>
+<td style="text-align: center;">78695</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">1862</td>
+<td style="text-align: center;">35996</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">2776</td>
+<td style="text-align: center;">24268</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">4236</td>
+<td style="text-align: center;">29284</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">5616</td>
+<td style="text-align: center;">33544</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">13</td>
+<td style="text-align: center;">7166</td>
+<td style="text-align: center;">33015</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">7689</td>
+<td style="text-align: center;">32173</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">7783</td>
+<td style="text-align: center;">43011</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">7608</td>
+<td style="text-align: center;">76338</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">17</td>
+<td style="text-align: center;">6963</td>
+<td style="text-align: center;">95842</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">18</td>
+<td style="text-align: center;">4248</td>
+<td style="text-align: center;">55544</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">19</td>
+<td style="text-align: center;">2460</td>
+<td style="text-align: center;">32561</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">1529</td>
+<td style="text-align: center;">19213</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">21</td>
+<td style="text-align: center;">1294</td>
+<td style="text-align: center;">13617</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">22</td>
+<td style="text-align: center;">932</td>
+<td style="text-align: center;">8287</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">23</td>
+<td style="text-align: center;">644</td>
+<td style="text-align: center;">4684</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Key Findings:</strong></p>
+<ul>
+<li><p><strong>Members (The Commuter Spikes):</strong> We expect to see two significant peaks in member usage: one between <strong>7:00 AM and 9:00 AM</strong> and another between <strong>4:00 PM and 6:00 PM</strong>. This “double-hump” pattern is a classic indicator of a workforce using the service for daily transit.</p></li>
+<li><p><strong>Casual Riders (The Afternoon Curve):</strong> Unlike members, casual riders typically show a steady increase in usage starting late morning, peaking in the <strong>mid-afternoon (12:00 PM - 3:00 PM)</strong>, and gradually declining. This suggests leisure activities that are not bound by strict office hours.</p></li>
+</ul>
+</section>
+<section id="geographic-analysis-top-starting-stations-by-user-type" class="level3">
+<h3 class="anchored" data-anchor-id="geographic-analysis-top-starting-stations-by-user-type">4.5 Geographic Analysis: Top Starting Stations by User Type</h3>
+<p>To validate the purpose of the trips, I have segmented the top starting stations by user type. This comparison reveals whether stations are located near commercial hubs (work-oriented) or leisure landmarks (recreation-oriented).</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Top 10 Stations for Casual Riders</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>top_10_casual <span class="ot">&lt;-</span> all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(member_casual <span class="sc">==</span> <span class="st">"casual"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(start_station_name) <span class="sc">|&gt;</span> </span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">number_of_rides =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(number_of_rides)) <span class="sc">|&gt;</span> </span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Top 10 Stations for Members</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>top_10_member <span class="ot">&lt;-</span> all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(member_casual <span class="sc">==</span> <span class="st">"member"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(start_station_name) <span class="sc">|&gt;</span> </span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">number_of_rides =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(number_of_rides)) <span class="sc">|&gt;</span> </span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Display Casual Table</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(top_10_casual, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Station Name (Casual)"</span>, <span class="st">"Rides"</span>), </span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">"Table 5a. Top 10 Starting Stations - Casual Riders"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Table 5a. Top 10 Starting Stations - Casual Riders</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Station Name (Casual)</th>
+<th style="text-align: right;">Rides</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Streeter Dr &amp; Grand Ave</td>
+<td style="text-align: right;">2741</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lake Shore Dr &amp; Monroe St</td>
+<td style="text-align: right;">2727</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Shedd Aquarium</td>
+<td style="text-align: right;">1831</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Millennium Park</td>
+<td style="text-align: right;">1403</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Michigan Ave &amp; Oak St</td>
+<td style="text-align: right;">1017</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Michigan Ave &amp; Washington St</td>
+<td style="text-align: right;">835</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dusable Harbor</td>
+<td style="text-align: right;">829</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Adler Planetarium</td>
+<td style="text-align: right;">826</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Theater on the Lake</td>
+<td style="text-align: right;">794</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lake Shore Dr &amp; North Blvd</td>
+<td style="text-align: right;">606</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display Member Table</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(top_10_member, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Station Name (Member)"</span>, <span class="st">"Rides"</span>), </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">"Table 5b. Top 10 Starting Stations - Annual Members"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Table 5b. Top 10 Starting Stations - Annual Members</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Station Name (Member)</th>
+<th style="text-align: right;">Rides</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Canal St &amp; Adams St</td>
+<td style="text-align: right;">13797</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Clinton St &amp; Washington Blvd</td>
+<td style="text-align: right;">13434</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Clinton St &amp; Madison St</td>
+<td style="text-align: right;">12889</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Kingsbury St &amp; Kinzie St</td>
+<td style="text-align: right;">8718</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Columbus Dr &amp; Randolph St</td>
+<td style="text-align: right;">8515</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Canal St &amp; Madison St</td>
+<td style="text-align: right;">7956</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Franklin St &amp; Monroe St</td>
+<td style="text-align: right;">7008</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Michigan Ave &amp; Washington St</td>
+<td style="text-align: right;">6684</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Larrabee St &amp; Kingsbury St</td>
+<td style="text-align: right;">6466</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Clinton St &amp; Lake St</td>
+<td style="text-align: right;">6437</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><strong>Analyst Note:</strong> The geographic data reveals two distinct “worlds” within the same city:</p>
+<ul>
+<li><p><strong>The Leisure Hub (Casuals):</strong> The top stations for casual riders, led by <strong>Streeter Dr &amp; Grand Ave (2,741 rides)</strong> and <strong>Lake Shore Dr &amp; Monroe St (2,727 rides)</strong>, are located exclusively near lakefront tourist attractions, parks, and museums.</p></li>
+<li><p><strong>The Transit Hub (Members):</strong> In contrast, member activity is concentrated at transit-linked stations such as <strong>Canal St &amp; Adams St (13,797 rides)</strong> and <strong>Clinton St &amp; Washington Blvd (13,434 rides)</strong>. These stations are adjacent to major metropolitan train terminals (Union Station and Ogilvie Transportation Center), confirming that members primarily use Cyclistic for the “last mile” of their professional daily commute.</p></li>
+</ul>
+</blockquote>
+</section>
+</section>
+<section id="share-visualization" class="level2">
+<h2 class="anchored" data-anchor-id="share-visualization">5. Share (Visualization)</h2>
+<p>In this phase, I transform the processed data into visual insights. These visualizations are designed to highlight the behavioral gap between casual riders and annual members, providing the marketing team with clear evidence for their strategy.</p>
+<section id="average-ride-duration-the-leisure-gap" class="level3">
+<h3 class="anchored" data-anchor-id="average-ride-duration-the-leisure-gap">5.1 Average Ride Duration (The Leisure Gap)</h3>
+<p>To establish the primary difference in usage, I first compare the average <code>ride_length</code>. This “quick insight” highlights a massive gap: casual riders consistently spend more time per trip than members.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Average ride length comparison</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(member_casual) <span class="sc">|&gt;</span> </span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_duration =</span> <span class="fu">mean</span>(ride_length)) <span class="sc">|&gt;</span> </span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> member_casual, <span class="at">y =</span> avg_duration, <span class="at">fill =</span> member_casual)) <span class="sc">+</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(avg_duration, <span class="dv">2</span>)), </span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">42</span>)) <span class="sc">+</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Average Ride Duration: Casual vs. Member"</span>,</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Casual riders spend significantly more time per trip"</span>,</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"User Type"</span>, </span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Average Duration (min)"</span>,</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Data Source: Motivate International Inc."</span>) <span class="sc">+</span></span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"casual"</span> <span class="ot">=</span> <span class="st">"#F8766D"</span>, <span class="st">"member"</span> <span class="ot">=</span> <span class="st">"#00BFC4"</span>)) <span class="sc">+</span></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">colour =</span> <span class="st">"gray"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/visual-duration-comparison-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Figure 1. Comparison of average trip duration between casual riders and annual members.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><strong>Analyst Note:</strong> This is the most significant behavioral indicator. Casual riders utilize bikes for <strong>38.38 minutes</strong> on average, nearly <strong>four times longer</strong> than members. This confirms that for casuals, the ride <em>is</em> the activity, while for members, it is primarily a tool for efficient point-to-point transit.</p>
+</blockquote>
+</section>
+<section id="user-distribution-by-day-proportional-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="user-distribution-by-day-proportional-analysis">5.2 User Distribution by Day (Proportional Analysis)</h3>
+<p>While members provide the bulk of the volume, a proportional analysis reveals that the <strong>market share of casual riders expands significantly on weekends</strong>. This highlights Saturdays and Sundays as the critical window for conversion efforts.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Proportional usage by day of week</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="sc">|&gt;</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(day_of_week, member_casual) <span class="sc">|&gt;</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(day_of_week) <span class="sc">|&gt;</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">percentage =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n)) <span class="sc">|&gt;</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> day_of_week, <span class="at">y =</span> percentage, <span class="at">fill =</span> member_casual)) <span class="sc">+</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Proportional Distribution of User Types"</span>,</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Casual riders' market share doubles on weekends"</span>,</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Day of Week"</span>, </span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Percentage of Total Rides"</span>, <span class="at">fill =</span> <span class="st">"User Type"</span>,</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Data Source: Motivate International Inc."</span>) <span class="sc">+</span></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"casual"</span> <span class="ot">=</span> <span class="st">"#F8766D"</span>, <span class="st">"member"</span> <span class="ot">=</span> <span class="st">"#00BFC4"</span>)) <span class="sc">+</span></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">colour =</span> <span class="st">"gray"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/visual-proportional-day-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Figure 2. Daily proportional distribution showing the increase in casual rider market share during weekends.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><strong>Analyst Note:</strong> While members provide the volume baseline during the workweek, the <strong>proportional market share of casual riders nearly doubles on weekends</strong>. This identifies Saturdays and Sundays as the “Golden Window” for conversion-focused marketing campaigns.</p>
+</blockquote>
+</section>
+<section id="hourly-distribution-per-day-the-commuter-pulse" class="level3">
+<h3 class="anchored" data-anchor-id="hourly-distribution-per-day-the-commuter-pulse">5.3 Hourly Distribution per Day (The Commuter Pulse)</h3>
+<p>By using independent scales, we uncover distinct temporal patterns: commuter spikes for members and an afternoon climb for casuals.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizing number of rides by user type during the day, faceted by day of week</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="sc">|&gt;</span> </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(member_casual, day_of_week, hour) <span class="sc">|&gt;</span> </span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">number_of_rides =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">'drop'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> hour, <span class="at">y =</span> number_of_rides, <span class="at">fill =</span> member_casual)) <span class="sc">+</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(member_casual <span class="sc">~</span> day_of_week, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>comma) <span class="sc">+</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Hourly Ride Distribution by User Type"</span>,</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Side-by-side comparison highlights distinct commuter vs. leisure patterns"</span>,</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Hour of Day (24h)"</span>, </span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Rides"</span>, </span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"User Type"</span>,</span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Data Source: Motivate International Inc."</span></span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>       ) <span class="sc">+</span></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"casual"</span> <span class="ot">=</span> <span class="st">"#F8766D"</span>, <span class="st">"member"</span> <span class="ot">=</span> <span class="st">"#00BFC4"</span>)) <span class="sc">+</span></span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">colour =</span> <span class="st">"gray"</span>),</span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>)</span>
+<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/visual-hourly-distribution-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Figure 3. Hourly ride distribution by day of the week, highlighting commuter spikes vs.&nbsp;leisure curves.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><strong>Analyst Note:</strong> Members exhibit sharp spikes at <strong>8:00 AM and 5:00 PM</strong> on weekdays. Casual ridership, however,follows a <strong>steady afternoon climb</strong>, peaking between <strong>1:00 PM and 4:00 PM</strong>. They are <em>afternoon users</em> who could be targeted with off-peak membership b</p>
+</blockquote>
+</section>
+<section id="geographic-distribution-mapping-the-two-worlds" class="level3">
+<h3 class="anchored" data-anchor-id="geographic-distribution-mapping-the-two-worlds">5.4 Geographic Distribution (Mapping the Two Worlds)</h3>
+<p>The top 10 starting stations by User type reveal a clear “Tourist vs.&nbsp;Worker” split.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Top 10 stations for Casuals vs Members with independent ordering</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  top_10_casual <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">user_type =</span> <span class="st">"Casual"</span>),</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  top_10_member <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">user_type =</span> <span class="st">"Member"</span>)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">station_name =</span> <span class="fu">reorder_within</span>(start_station_name, </span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>                                       number_of_rides, user_type)) <span class="sc">|&gt;</span> </span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> station_name, <span class="at">y =</span> number_of_rides, <span class="at">fill =</span> user_type)) <span class="sc">+</span></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>user_type, <span class="at">scales =</span> <span class="st">"free"</span>) <span class="sc">+</span></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_reordered</span>() <span class="sc">+</span> </span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Top 10 Starting Stations by User Type"</span>,</span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Leisure landmarks for casuals vs. transit hubs for members"</span>,</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Station Name"</span>, </span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Rides"</span>,</span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Data Source: Motivate International Inc."</span></span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>       ) <span class="sc">+</span></span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Casual"</span> <span class="ot">=</span> <span class="st">"#F8766D"</span>, <span class="st">"Member"</span> <span class="ot">=</span> <span class="st">"#00BFC4"</span>)) <span class="sc">+</span></span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">colour =</span> <span class="st">"gray"</span>),</span>
+<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>)</span>
+<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/visual-top-stations-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Figure 4. Top 10 starting stations for both user types, revealing distinct geographic preferences.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><strong>Analyst Note:</strong> Casual riders dominate lakefront landmarks like <strong>Streeter Dr &amp; Grand Ave</strong>. Meanwhile, members are concentrated in transit hubs near train terminals, such as <strong>Canal St &amp; Adams St</strong>, which records over <strong>13,000 rides</strong>.</p>
+</blockquote>
+</section>
+<section id="geographic-cluster-map-the-spatial-divide" class="level3">
+<h3 class="anchored" data-anchor-id="geographic-cluster-map-the-spatial-divide">5.5 Geographic Cluster Map (The Spatial Divide)</h3>
+<p>By plotting the enriched coordinates, we can visualize the “Two Chicagos”. Members form dense clusters in the <strong>central Loop and transit corridors</strong>, while casual riders are heavily concentrated along the <strong>lakefront and tourist landmarks</strong>.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Geographic plot with focus on Chicago coordinates</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>all_trips_v2 <span class="sc">|&gt;</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(start_lat)) <span class="sc">|&gt;</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(start_lat <span class="sc">&gt;</span> <span class="fl">41.7</span> <span class="sc">&amp;</span> start_lat <span class="sc">&lt;</span> <span class="fl">42.05</span> <span class="sc">&amp;</span> start_lng <span class="sc">&gt;</span> <span class="sc">-</span><span class="fl">87.75</span> <span class="sc">&amp;</span> start_lng <span class="sc">&lt;</span> <span class="sc">-</span><span class="fl">87.55</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> start_lng, <span class="at">y =</span> start_lat, <span class="at">color =</span> member_casual)) <span class="sc">+</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>member_casual) <span class="sc">+</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span> </span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Geographic Usage Clusters in Chicago"</span>,</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Spatial divide: Casuals (Lakefront) vs Members (Loop/Transit) "</span>,</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Data Source: Motivate International Inc."</span>,</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"User Type"</span>) <span class="sc">+</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"casual"</span> <span class="ot">=</span> <span class="st">"#F8766D"</span>, <span class="st">"member"</span> <span class="ot">=</span> <span class="st">"#00BFC4"</span>)) <span class="sc">+</span></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">override.aes =</span> <span class="fu">list</span>(<span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">3</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/visual-geographic-map-final-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Figure 5. Spatial distribution of trip starts, reconstructing Chicago’s geography through usage density.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-panel" data-layout-ncol="1" style="text-align: center;">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/chicago_map.png" class="img-fluid figure-img"></p>
+<figcaption>Image 5. Top 10 Starting Stations by User Type - Casuals in red, Members in blue</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><strong>Analyst Note:</strong> The visual evidence is conclusive. When comparing the data clusters to the functional city map, we find that <strong>Casual riders</strong> are geographically “locked” to leisure corridors like <strong>Navy Pier (Streeter Dr &amp; Grand Ave)</strong> and the <strong>Museum Campus (Shedd Aquarium)</strong>. Conversely, <strong>Members</strong> are concentrated in the city’s “nervous system”—the transit hubs near <strong>Union and Ogilvie Stations (e.g., Canal St &amp; Adams St)</strong> that facilitate the daily professional commute.</p>
+</blockquote>
 </section>
 </section>
 

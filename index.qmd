@@ -29,18 +29,20 @@ The first two categories are considered ***Casual riders*** (Customers according
 In addition to conventional bicycles, Cyclistic provides three inclusive options:
 
 ::: {layout-ncol="3" style="text-align: center;"}
-![Reclining Bikes](images/reclining_bike.png)
+![Image 1. Reclining Bikes](images/reclining_bike.png){fig-alt="Reclining Bike"}
 
-![Hand Tricycles](images/hand_tricycle.png)
+![Image 2. Hand Tricycles](images/hand_tricycle.png){fig-alt="Hand Tricycle"}
 
-![Cargo Bikes](images/cargo_bike.png)
+![Image 3. Cargo Bikes](images/cargo_bike.png){fig-alt="Cargo Bike"}
 :::
 
 The marketing analyst team, led by Director Lily Moreno, has identified that 92% of users utilize conventional bicycles. Furthermore, 70% of users use the equipment for recreational purposes, while the remaining 30% use it as a means of transportation to work.
 
 Given that annual memberships yield the highest profits, the marketing team aims to better understand users, their needs, and attraction channels (digital media) to **convert casual riders into Cyclistic members**.
 
-![](images/cyclistic.png){fig-alt="Cyclistic logo" fig-align="center"}
+::: {layout-ncol="1" style="text-align: center;"}
+![Image 4. Cyclistic](images/cyclistic.png){fig-alt="Cyclistic logo" fig-align="center"}
+:::
 
 ## 1. Ask
 
@@ -98,6 +100,8 @@ First, I load the necessary libraries and import the datasets for the first quar
 library(tidyverse)
 library(lubridate)
 library(janitor)
+library(skimr)
+library(tidytext)
 ```
 
 ```{r}
@@ -175,13 +179,13 @@ all_trips <- bind_rows(q1_2019, q1_2020)
 rm(q1_2019, q1_2020)
 ```
 
-#### 3.6 Adding Time Metrics
+### 3.6 Adding Time Metrics
 
 To answer how users utilize the service differently, I will extract the date, month, and day of the week from the `started_at` column. Additionally, I will calculate the `ride_length` in minutes.
 
 ```{r}
 #| label: time-metrics
-# Ensure date labels are in English for consistency
+# Ensure date labels are set to English for consistency
 Sys.setlocale("LC_TIME", "English")
 # Extract date components and calculate duration
 all_trips <- all_trips |> 
@@ -203,15 +207,12 @@ The final step in the process phase is to remove data that could skew the result
 ```{r}
 #| label: cleaning
 # Filter out invalid durations and administrative station entries
-all_trips_v2 <- all_trips |> 
+all_trips <- all_trips |> 
   filter(start_station_name != "HQ QR" | is.na(start_station_name)) |> 
   filter(ride_length > 0)
 
-# Verify the final dimensions of the clean dataset
-dim(all_trips_v2)
-
 # station_names validation
-all_trips_v2 |> 
+all_trips |> 
   group_by(start_station_id) |> 
   filter(n_distinct(start_station_name) > 1) |> 
   summarise(names = list(unique(start_station_name))) |>
@@ -226,7 +227,7 @@ A preliminary group analysis revealed that the same physical docking station was
 ```{r}
 #| label: station-deep-clean
 # 1. Remove temporary and special character tags
-all_trips_v2 <- all_trips_v2 |> 
+all_trips_v2 <- all_trips |> 
   mutate(across(c(start_station_name, end_station_name), 
                 ~ str_remove_all(., " \\(Temp\\)| \\(\\*\\)")))
 
@@ -254,7 +255,86 @@ all_trips_v2 |>
   filter(unique_names > 1)
 ```
 
-### 3.9 Final Column Selection
+### 3.9 Coordinate Enrichment (Backfilling)
+
+Since the 2019 dataset lacks geographic coordinates, I will use the `station_id` to map the latitude and longitude from the 2020 records to the 2019 ones. This ensures a consistent geographic analysis across the entire timeframe.
+
+```{r}
+#| label: coordinate-mapping
+
+#| label: coordinate-mapping-full
+
+# 1. Create a reference table for all unique station coordinates
+station_map <- all_trips_v2 |>
+  filter(!is.na(start_lat)) |>
+  group_by(start_station_id) |>
+  summarise(
+    ref_lat = mean(start_lat, na.rm = TRUE),
+    ref_lng = mean(start_lng, na.rm = TRUE),
+    .groups = 'drop'
+  )
+
+# 2. Enrich both Start and End coordinates in a single flow
+all_trips_v2 <- all_trips_v2 |>
+  # Enrich Start Stations
+  left_join(station_map, by = c("start_station_id" = "start_station_id")) |>
+  mutate(
+    start_lat = coalesce(start_lat, ref_lat),
+    start_lng = coalesce(start_lng, ref_lng)
+  ) |>
+  select(-c(ref_lat, ref_lng)) |>
+  # Enrich End Stations
+  left_join(station_map, by = c("end_station_id" = "start_station_id")) |>
+  mutate(
+    end_lat = coalesce(end_lat, ref_lat),
+    end_lng = coalesce(end_lng, ref_lng)
+  ) |>
+  select(-c(ref_lat, ref_lng))
+
+# Remove the intermediate dataset to free up memory for analysis
+rm(station_map)
+
+# 3. Final Data Quality Verification
+summary_geo <- all_trips_v2 |> 
+  summarise(
+    missing_start = sum(is.na(start_lat)),
+    missing_end = sum(is.na(end_lat))
+  )
+print(summary_geo)
+```
+
+By applying this to both start and end stations, I successfully reduced the missing geographic data from 46% to less than **0.01%** of the total records.
+
+### 3.10 Final Data Type Transformation
+
+To ensure analytical accuracy, I am converting categorical variables—such as station IDs, months, and days—into factors. This step is crucial for maintaining the correct chronological order in visualizations and ensuring that identification numbers are not treated as mathematical values.
+
+```{r}
+#| label: final-types
+# Set locale to English again just to be safe before factoring
+Sys.setlocale("LC_TIME", "English")
+
+all_trips_v2 <- all_trips_v2 |> 
+  mutate(
+    # IDs as characters (since they are identifications, not numbers)
+    start_station_id = as.character(start_station_id),
+    end_station_id = as.character(end_station_id),
+    
+    # Temporal variables as ordered factors
+    month = factor(month, levels = c("01", "02", "03"), ordered = TRUE),
+    
+    day_of_week = factor(day_of_week, 
+                         levels = c("Monday", "Tuesday", "Wednesday", "Thursday", 
+                                    "Friday", "Saturday", "Sunday"), 
+                         ordered = TRUE),
+    
+    # Year and User Type as factors
+    year = factor(year),
+    member_casual = factor(member_casual)
+  )
+```
+
+### 3.11 Final Column Selection
 
 To ensure a consistent analysis between 2019 and 2020, I have opted to remove the `gender` and `birthyear` columns. These variables were not collected in the 2020 dataset, and including them would result in an incomplete demographic profile. Additionally, the `tripduration` column from 2019 was removed in favor of the newly calculated `ride_length` variable to ensure a uniform measurement unit (minutes) across all records.
 
@@ -265,25 +345,355 @@ all_trips_v2 <- all_trips_v2 |>
   select(-c(gender, birthyear, tripduration))
 ```
 
-### 3.10 Data Health Check & Quality Assurance
+### 3.12 Data Health Check & Quality Assurance
 
 As a final step before analysis, I conducted a quality check using the `skimr` library to ensure there are no missing values in critical columns and to examine the distribution of `ride_length`.
 
 ```{r}
 #| label: qa-check
-#| message: false
-library(skimr)
-
 # Summary of the clean dataset
 skim(all_trips_v2)
+```
 
-# Verify there are no NA values in key analytical columns
+> **Analyst Note:** The `skim` output confirms a clean dataset with **788,189 observations**. While coordinates (`lat`/`lng`) show some missing values (46%), this does not impact the primary business question regarding usage patterns by membership type.
+
+**Critical Data Note:** The `skim` analysis reveals significant outliers in `ride_length`. While the median trip is only **8.98 minutes**, the maximum value reaches an unrealistic **177,200.37 minutes** (approx. 123 days). These outliers skew the distribution, as seen in the "flat" histogram. For the subsequent analysis, I will consider these anomalies to ensure the average metrics represent true user behavior.
+
+### 3.13 Outlier Treatment & Business Logic Validation
+
+A critical anomaly was detected during the quality check: several trips recorded durations exceeding **100 days**. Based on **industry standards** for urban bike-sharing systems and Cyclistic's business model—focused on short-term city transit—trips lasting more than **24 hours (1,440 minutes)** are considered technical errors, thefts, or system failures rather than intentional rentals.
+
+To ensure that descriptive statistics (like the average) reflect true user behavior, I have capped the dataset at 24 hours.
+
+> **Note for the Operations Team:** This 24-hour threshold is a data-driven recommendation. I suggest the Cyclistic technical team validates these specific records to confirm if they represent unreturned bikes or docking station malfunctions.
+
+```{r}
+#| label: outlier-filtering
+# Filtering trips to a maximum of 24 hours (1,440 minutes)
+all_trips_v2 <- all_trips_v2 |> 
+  filter(ride_length <= 1440)
+
+# Remove the intermediate dataset to free up memory for analysis
+rm(all_trips)
+
+# Verify the final dimensions of the clean dataset
+print(paste("Final dimensions of the clean dataset:", paste(dim(all_trips_v2), collapse = " x ")))
+```
+
+## 4. Analyze
+
+With a clean and consolidated dataset of **787,707 records**, I will now perform a descriptive analysis to uncover trends and patterns. The focus is on identifying how usage differs between members and casual riders.
+
+### 4.1 General Descriptive Statistics
+
+First, I will establish a baseline for the `ride_length` variable. As noted in the previous phase, the distribution is skewed, so comparing the mean and median is essential.
+
+```{r}
+#| label: descriptive-stats
+# Summary statistics for ride_length (in minutes)
 all_trips_v2 |> 
   summarise(
-    na_ride_id = sum(is.na(ride_id)),
-    na_member_casual = sum(is.na(member_casual)),
-    na_ride_length = sum(is.na(ride_length))
+    number_of_rides = n(),
+    mean_ride_length = mean(ride_length),
+    median_ride_length = median(ride_length),
+    max_ride_length = max(ride_length),
+    min_ride_length = min(ride_length)
+  ) |> 
+  knitr::kable(
+    col.names = c("Number of rides", "Mean", "Median", "Max", "Min"),
+    align = "ccccc",
+    digits = 2,
+    caption = "Table 1. Ride Duration Summary Statistics"
   )
 ```
 
-**Analyst Note:** The `skim` output confirms a clean dataset with **788,189 observations**. While coordinates (`lat`/`lng`) show some missing values (46%), this does not impact the primary business question regarding usage patterns by membership type.
+The baseline analysis of `ride_length` reveals that the average trip duration is **13.72 minutes**, while the median is **8.98 minutes**. The significant gap between the mean and median confirms that, even after removing extreme outliers (trips \> 24 hours), the distribution remains skewed by longer occasional rides.
+
+### 4.2 Segmented Analysis: Members vs. Casuals
+
+The core of our task is the comparison between user types. Initial data shows a clear dominance of members in total volume (720,125 members vs. 67,582 casuals). Now, let's see how their trip durations compare.
+
+```{r}
+#| label: member-vs-casual-comparison
+# Comparing mean and median duration by user type
+all_trips_v2 |> 
+  group_by(member_casual) |> 
+  summarise(
+    number_of_rides = n(),
+    mean_ride_length = mean(ride_length),
+    median_ride_length = median(ride_length),
+    max_ride_length = max(ride_length),
+    min_ride_length = min(ride_length)
+  ) |> 
+  knitr::kable(
+    col.names = c("User Type", "Number of rides", "Mean", "Median", "Max", "Min"),
+    align = "cccccc",
+    digits = 2,
+    caption = "Table 2. Mean and Median Ride Duration by User Type"
+  )
+```
+
+When segmenting by user type, we find a stark contrast in behavior. While annual members account for the vast majority of trips (**720,125 rides**), casual riders utilize the equipment for significantly longer periods.
+
+**Key Business Insight:** Casual riders' median trip duration (**23.13 min**) is nearly **three times longer** than that of members (**8.47 min**). This data **provides statistical evidence to support the Marketing Team's observation** that Members use Cyclistic as a highly efficient "A-to-B" commuting tool, while Casuals view the service as a platform for leisure or sightseeing.
+
+### 4.3 Weekly Usage Patterns
+
+To understand when these users are most active, I analyzed the number of rides and average duration for each day of the week. This analysis is crucial for identifying routine-based versus leisure-based behaviors.
+
+```{r}
+#| label: weekday-analysis
+# Summary of rides and average duration by day of week
+all_trips_v2 |> 
+  group_by(member_casual, day_of_week) |> 
+  summarise(
+    number_of_rides = n(),
+    average_ride_length = mean(ride_length),
+    .groups = 'drop'
+  ) |> 
+  knitr::kable(
+    col.names = c("User Type", "Day of Week", "Number of Rides", "Avg Duration (min)"),
+    align = "llcc",
+    digits = 2,
+    caption = "Table 3. Weekly Usage Patterns: Volume and Duration"
+  )
+```
+
+**Key Findings:**
+
+-   **Members (The Commuters):** Their highest volume of rides occurs during the workweek (Monday through Friday), with a noticeable decline on Saturdays and Sundays. Their average duration remains remarkably consistent throughout the week, reinforcing the idea of routine, time-sensitive trips.
+
+-   **Casual Riders (The Leisure Seekers):** While their total volume is lower than that of members, their activity peaks during the weekend. Furthermore, their average ride duration increases significantly on Saturdays and Sundays, suggesting that their use of Cyclistic is primarily tied to recreational or non-routine activities.
+
+### 4.4 Hourly Usage Patterns
+
+To further differentiate user behavior, I analyzed the distribution of rides by the hour of the day. This provides insight into whether the bikes are being used for scheduled activities (like commuting) or flexible ones (like tourism).
+
+```{r}
+#| label: hourly-analysis
+# Extract the hour from the starting timestamp
+all_trips_v2 <- all_trips_v2 |> 
+  mutate(hour = hour(started_at))
+
+# Summarize the number of rides per hour and user type
+all_trips_v2 |> 
+  group_by(member_casual, hour) |> 
+  summarise(number_of_rides = n(), .groups = 'drop') |> 
+  pivot_wider(names_from = member_casual, values_from = number_of_rides) |> 
+  knitr::kable(
+    col.names = c("Hour of Day", "Casual Rides", "Member Rides"),
+    align = "ccc",
+    caption = "Table 4. Hourly Distribution of Rides by User Type"
+  )
+```
+
+**Key Findings:**
+
+-   **Members (The Commuter Spikes):** We expect to see two significant peaks in member usage: one between **7:00 AM and 9:00 AM** and another between **4:00 PM and 6:00 PM**. This "double-hump" pattern is a classic indicator of a workforce using the service for daily transit.
+
+-   **Casual Riders (The Afternoon Curve):** Unlike members, casual riders typically show a steady increase in usage starting late morning, peaking in the **mid-afternoon (12:00 PM - 3:00 PM)**, and gradually declining. This suggests leisure activities that are not bound by strict office hours.
+
+### 4.5 Geographic Analysis: Top Starting Stations by User Type
+
+To validate the purpose of the trips, I have segmented the top starting stations by user type. This comparison reveals whether stations are located near commercial hubs (work-oriented) or leisure landmarks (recreation-oriented).
+
+```{r}
+#| label: top-stations-comparison
+# Top 10 Stations for Casual Riders
+top_10_casual <- all_trips_v2 |> 
+  filter(member_casual == "casual") |> 
+  group_by(start_station_name) |> 
+  summarise(number_of_rides = n()) |> 
+  arrange(desc(number_of_rides)) |> 
+  head(10)
+
+# Top 10 Stations for Members
+top_10_member <- all_trips_v2 |> 
+  filter(member_casual == "member") |> 
+  group_by(start_station_name) |> 
+  summarise(number_of_rides = n()) |> 
+  arrange(desc(number_of_rides)) |> 
+  head(10)
+
+# Display Casual Table
+knitr::kable(top_10_casual, col.names = c("Station Name (Casual)", "Rides"), 
+             caption = "Table 5a. Top 10 Starting Stations - Casual Riders")
+
+# Display Member Table
+knitr::kable(top_10_member, col.names = c("Station Name (Member)", "Rides"), 
+             caption = "Table 5b. Top 10 Starting Stations - Annual Members")
+```
+
+> **Analyst Note:** The geographic data reveals two distinct "worlds" within the same city:
+>
+> -   **The Leisure Hub (Casuals):** The top stations for casual riders, led by **Streeter Dr & Grand Ave (2,741 rides)** and **Lake Shore Dr & Monroe St (2,727 rides)**, are located exclusively near lakefront tourist attractions, parks, and museums.
+>
+> -   **The Transit Hub (Members):** In contrast, member activity is concentrated at transit-linked stations such as **Canal St & Adams St (13,797 rides)** and **Clinton St & Washington Blvd (13,434 rides)**. These stations are adjacent to major metropolitan train terminals (Union Station and Ogilvie Transportation Center), confirming that members primarily use Cyclistic for the "last mile" of their professional daily commute.
+
+## 5. Share (Visualization)
+
+In this phase, I transform the processed data into visual insights. These visualizations are designed to highlight the behavioral gap between casual riders and annual members, providing the marketing team with clear evidence for their strategy.
+
+### 5.1 Average Ride Duration (The Leisure Gap)
+
+To establish the primary difference in usage, I first compare the average `ride_length`. This "quick insight" highlights a massive gap: casual riders consistently spend more time per trip than members.
+
+```{r}
+#| label: visual-duration-comparison
+#| fig-cap: "Figure 1. Comparison of average trip duration between casual riders and annual members."
+# Average ride length comparison
+all_trips_v2 |> 
+  group_by(member_casual) |> 
+  summarise(avg_duration = mean(ride_length)) |> 
+  ggplot(aes(x = member_casual, y = avg_duration, fill = member_casual)) +
+  geom_col(show.legend = FALSE) +
+  geom_text(aes(label = round(avg_duration, 2)), 
+            vjust = -0.5, fontface = "bold") +
+  coord_cartesian(ylim = c(0, 42)) +
+  theme_minimal() +
+  labs(title = "Average Ride Duration: Casual vs. Member",
+       subtitle = "Casual riders spend significantly more time per trip",
+       x = "User Type", 
+       y = "Average Duration (min)",
+       caption = "Data Source: Motivate International Inc.") +
+  scale_fill_manual(values = c("casual" = "#F8766D", "member" = "#00BFC4")) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(colour = "gray"))
+```
+
+> **Analyst Note:** This is the most significant behavioral indicator. Casual riders utilize bikes for **38.38 minutes** on average, nearly **four times longer** than members. This confirms that for casuals, the ride *is* the activity, while for members, it is primarily a tool for efficient point-to-point transit.
+
+### 5.2 User Distribution by Day (Proportional Analysis)
+
+While members provide the bulk of the volume, a proportional analysis reveals that the **market share of casual riders expands significantly on weekends**. This highlights Saturdays and Sundays as the critical window for conversion efforts.
+
+```{r}
+#| label: visual-proportional-day
+#| fig-cap: "Figure 2. Daily proportional distribution showing the increase in casual rider market share during weekends."
+# Proportional usage by day of week
+all_trips_v2 |>
+  count(day_of_week, member_casual) |>
+  group_by(day_of_week) |>
+  mutate(percentage = n / sum(n)) |>
+  ggplot(aes(x = day_of_week, y = percentage, fill = member_casual)) +
+  geom_col(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  labs(title = "Proportional Distribution of User Types",
+       subtitle = "Casual riders' market share doubles on weekends",
+       x = "Day of Week", 
+       y = "Percentage of Total Rides", fill = "User Type",
+       caption = "Data Source: Motivate International Inc.") +
+  scale_fill_manual(values = c("casual" = "#F8766D", "member" = "#00BFC4")) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(colour = "gray"))
+```
+
+> **Analyst Note:** While members provide the volume baseline during the workweek, the **proportional market share of casual riders nearly doubles on weekends**. This identifies Saturdays and Sundays as the "Golden Window" for conversion-focused marketing campaigns.
+
+### 5.3 Hourly Distribution per Day (The Commuter Pulse)
+
+By using independent scales, we uncover distinct temporal patterns: commuter spikes for members and an afternoon climb for casuals.
+
+```{r}
+#| label: visual-hourly-distribution
+#| message: false
+#| fig-cap: "Figure 3. Hourly ride distribution by day of the week, highlighting commuter spikes vs. leisure curves."
+# Visualizing number of rides by user type during the day, faceted by day of week
+all_trips_v2 |> 
+  group_by(member_casual, day_of_week, hour) |> 
+  summarise(number_of_rides = n(), .groups = 'drop') |> 
+  ggplot(aes(x = hour, y = number_of_rides, fill = member_casual)) +
+  geom_col(position = "dodge") +
+  facet_grid(member_casual ~ day_of_week, scales = "free_y") +
+  theme_minimal() +
+  scale_y_continuous(labels = scales::comma) +
+  labs(title = "Hourly Ride Distribution by User Type",
+       subtitle = "Side-by-side comparison highlights distinct commuter vs. leisure patterns",
+       x = "Hour of Day (24h)", 
+       y = "Number of Rides", 
+       fill = "User Type",
+       caption = "Data Source: Motivate International Inc."
+       ) +
+  scale_fill_manual(values = c("casual" = "#F8766D", "member" = "#00BFC4")) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(colour = "gray"),
+    strip.text = element_text(face = "bold")
+  )
+```
+
+> **Analyst Note:** Members exhibit sharp spikes at **8:00 AM and 5:00 PM** on weekdays. Casual ridership, however,follows a **steady afternoon climb**, peaking between **1:00 PM and 4:00 PM**. They are *afternoon users* who could be targeted with off-peak membership b
+
+### 5.4 Geographic Distribution (Mapping the Two Worlds)
+
+The top 10 starting stations by User type reveal a clear "Tourist vs. Worker" split.
+
+```{r}
+#| label: visual-top-stations
+#| message: false
+#| fig-cap: "Figure 4. Top 10 starting stations for both user types, revealing distinct geographic preferences."
+# Top 10 stations for Casuals vs Members with independent ordering
+bind_rows(
+  top_10_casual |> mutate(user_type = "Casual"),
+  top_10_member |> mutate(user_type = "Member")
+) |> 
+  mutate(station_name = reorder_within(start_station_name, 
+                                       number_of_rides, user_type)) |> 
+  ggplot(aes(x = station_name, y = number_of_rides, fill = user_type)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  facet_wrap(~user_type, scales = "free") +
+  scale_x_reordered() + 
+  theme_minimal() +
+  labs(title = "Top 10 Starting Stations by User Type",
+       subtitle = "Leisure landmarks for casuals vs. transit hubs for members",
+       x = "Station Name", 
+       y = "Number of Rides",
+       caption = "Data Source: Motivate International Inc."
+       ) +
+  scale_fill_manual(values = c("Casual" = "#F8766D", "Member" = "#00BFC4")) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(colour = "gray"),
+    strip.text = element_text(face = "bold")
+  )
+```
+
+> **Analyst Note:** Casual riders dominate lakefront landmarks like **Streeter Dr & Grand Ave**. Meanwhile, members are concentrated in transit hubs near train terminals, such as **Canal St & Adams St**, which records over **13,000 rides**.
+
+### 5.5 Geographic Cluster Map (The Spatial Divide)
+
+By plotting the enriched coordinates, we can visualize the "Two Chicagos". Members form dense clusters in the **central Loop and transit corridors**, while casual riders are heavily concentrated along the **lakefront and tourist landmarks**.
+
+```{r}
+#| label: visual-geographic-map-final
+#| message: false
+#| fig-cap: "Figure 5. Spatial distribution of trip starts, reconstructing Chicago's geography through usage density."
+# Geographic plot with focus on Chicago coordinates
+all_trips_v2 |>
+  filter(!is.na(start_lat)) |>
+  filter(start_lat > 41.7 & start_lat < 42.05 & start_lng > -87.75 & start_lng < -87.55) |> 
+  ggplot(aes(x = start_lng, y = start_lat, color = member_casual)) +
+  geom_point(alpha = 0.1, size = 0.5) + 
+  facet_wrap(~member_casual) +
+  theme_void() + 
+  labs(title = "Geographic Usage Clusters in Chicago",
+       subtitle = "Spatial divide: Casuals (Lakefront) vs Members (Loop/Transit) ",
+       caption = "Data Source: Motivate International Inc.",
+       color = "User Type") +
+  scale_color_manual(values = c("casual" = "#F8766D", "member" = "#00BFC4")) +
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 3)))
+```
+
+::: {layout-ncol="1" style="text-align: center;"}
+![Image 5. Top 10 Starting Stations by User Type - Casuals in red, Members in blue](images/chicago_map.png)
+:::
+
+> **Analyst Note:** The visual evidence is conclusive. When comparing the data clusters to the functional city map, we find that **Casual riders** are geographically "locked" to leisure corridors like **Navy Pier (Streeter Dr & Grand Ave)** and the **Museum Campus (Shedd Aquarium)**. Conversely, **Members** are concentrated in the city’s "nervous system"—the transit hubs near **Union and Ogilvie Stations (e.g., Canal St & Adams St)** that facilitate the daily professional commute.
